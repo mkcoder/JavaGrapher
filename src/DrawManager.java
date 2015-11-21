@@ -1,5 +1,11 @@
+import java.awt.Color;
 
-public class DrawManager
+import javax.swing.JPanel;
+
+public class DrawManager extends JPanel
 {
-
+	public DrawManager()
+	{
+		setBackground(Color.RED);
+	}
 }
