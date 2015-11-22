@@ -1,29 +1,40 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
 public class DrawManager extends JPanel implements MouseMotionListener, MouseListener
 {
+	public static final double SCALE_SEN = 0.01; // sensitivity of scaling
+	
 	private Point origin;         // coordinates of graph's origin
-	private Dimension scale;      // size of one unit
+	private DimensionF scale;     // size of one unit
 	private Dimension size;       // panel's size
 	private boolean drawAxesFlag; // flag for drawing axes
 	private boolean drawGridFlag; // flag for drawing grid
+	private boolean drawNumFlag;  // flag for drawing numbers on axes
 	private Point mouseLast;      // last cursor position
 	private Color gridColor;      // color of the grid and axes
+	private DimensionF tick;      // distance between axis labels
 	private ArrayList<Function> functions;
+	private String debugString;   // string used for debug purposes
 	
 	public DrawManager()
 	{
 		setBackground(new Color(200, 255, 200));		
 		drawAxesFlag = true;
 		drawGridFlag = true;
+		drawNumFlag = true;
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		scale = new Dimension(20, 20);
+		scale = new DimensionF(20, 20);
 		gridColor = Color.BLACK;
+		tick = new DimensionF(1,1);
 		functions = new ArrayList<Function>();
+		debugString = "";
+		
+		functions.add(new Function("sin(x)",Color.RED));
 	}
 	
 	public void initialize()
@@ -47,10 +58,17 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 			drawAxes(g);
 		}
 		
+		if(drawNumFlag)
+		{
+			drawNumbers(g);
+		}
+		
 		for(Function f : functions)
 		{
-			f.draw(g, origin, scale);
+			f.draw(g, origin, scale, size);
 		}
+		
+		Brush.drawString(g, debugString, new Point(20,20), Color.RED, 15);
 	}
 	
 	private void drawAxes(Graphics g)
@@ -72,15 +90,44 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		color = new Color((getBackground().getRed() + gridColor.getRed())/2, 
 				(getBackground().getGreen() + gridColor.getGreen())/2, (getBackground().getBlue() + gridColor.getBlue())/2);
 		
-		for(int i = origin.x % scale.width; i < size.width; i += scale.width) // vertical grid lines
+		if(tick.width*scale.width < 1)
+			return;
+		
+		for(int i = origin.x % (int)(tick.width*scale.width); i < size.width; i += tick.width*scale.width) // vertical grid lines
 		{
 			Brush.drawLine(g, new Point(i,0), new Point(i,size.height), color, 1);
 		}
 		
-		for(int i = origin.y % scale.height; i < size.height; i += scale.height) // horizontal grid lines
+		for(int i = origin.y % (int)(tick.height*scale.height); i < size.height; i += tick.height*scale.height) // horizontal grid lines
 		{
 			Brush.drawLine(g, new Point(0,i), new Point(size.width,i), color, 1);
 		}
+	}
+	
+	private void drawNumbers(Graphics g)
+	{		
+		if(tick.width*scale.width < 1)
+			return;
+		
+		for(int i = origin.x % (int)(tick.width*scale.width); i < size.width; i += tick.width*scale.width) // numbers on x-axis
+		{
+			Brush.drawString(g, Math.round((tick.width*i - origin.x)/scale.width) + "", new Point(i,origin.y), gridColor, 10);
+		}
+		
+		for(int i = origin.y % (int)(tick.height*scale.height); i < size.height; i += tick.height*scale.height) // numbers on y-axis
+		{
+			Brush.drawString(g, Math.round(-(tick.height*i - origin.y)/scale.height) + "", new Point(origin.x,i), gridColor, 10);
+		}
+	}
+	
+	public void addFunction(Function f)
+	{
+		functions.add(f);
+	}
+	
+	public void removeFunction(int index)
+	{
+		functions.remove(index);
 	}
 	
 	// SETTERS
@@ -95,19 +142,39 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		drawGridFlag = flag;
 	}
 	
-	public void setScale(Dimension scale)
+	public void showNumbers(boolean flag)
+	{
+		drawNumFlag = flag;
+	}
+	
+	public void setScale(DimensionF scale)
 	{
 		this.scale = scale;
 	}
 	
-	public void setScaleH(int width)
+	public void setScaleH(double horizontal)
 	{
-		scale.width = width;
+		scale.width = horizontal;
 	}
 	
-	public void setScaleV(int heigth)
+	public void setScaleV(double vertical)
 	{
-		scale.height = heigth;
+		scale.height = vertical;
+	}
+	
+	public void setTick(DimensionF tick)
+	{
+		this.tick = tick;
+	}
+	
+	public void setTickH(double horizontal)
+	{
+		tick.width = horizontal;
+	}
+	
+	public void setTickV(double vertical)
+	{
+		tick.height = vertical;
 	}
 	
 	public void setGridColor(Color color)
@@ -119,10 +186,27 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 
 	@Override
     public void mouseDragged(MouseEvent e)
-	{
-		// drag origin
-		origin.x -= mouseLast.x - e.getX();
-		origin.y -= mouseLast.y - e.getY();
+	{		
+		if(SwingUtilities.isRightMouseButton(e))
+		{
+			if(mouseLast.x - e.getX() < 0)
+			{
+				scale.width *= 1 - (-(mouseLast.x - e.getX())) * SCALE_SEN;
+				scale.height *= 1 - (-(mouseLast.x - e.getX())) * SCALE_SEN;
+			}
+			else if(mouseLast.x - e.getX() > 0)
+			{
+				scale.width *= 1 + (mouseLast.x - e.getX()) * SCALE_SEN;
+				scale.height *= 1 + (mouseLast.x - e.getX()) * SCALE_SEN;
+			}
+			
+		}
+		else if(SwingUtilities.isLeftMouseButton(e))
+		{
+			origin.x -= mouseLast.x - e.getX();
+			origin.y -= mouseLast.y - e.getY();		
+		}
+		
 		mouseLast = new Point(e.getX(),e.getY());
 		getParent().repaint();
     }

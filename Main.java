@@ -11,7 +11,8 @@ public class Main
 		DrawManager drawManager;		
 		
 		frame = new JFrame("Grapher");
-		frame.setSize(1024, 768);		
+		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+		frame.setSize(1024, 768);
 		drawManager = new DrawManager();
 		rightPanel = new RightPanel(drawManager);
 		frame.add(rightPanel,BorderLayout.EAST);
@@ -19,5 +20,4 @@ public class Main
 		frame.setVisible(true);
 		drawManager.initialize();
 	}
-
 }
