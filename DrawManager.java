@@ -24,6 +24,7 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		addMouseMotionListener(this);
 		scale = new Dimension(10,10);
 		gridColor = Color.BLACK;
+		functions = new ArrayList<Function>();
 	}
 	
 	@Override
