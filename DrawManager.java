@@ -8,15 +8,15 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 {
 	public static final double SCALE_SEN = 0.01; // sensitivity of scaling
 	
-	private Point origin;         // coordinates of graph's origin
-	private DimensionF scale;     // size of one unit
-	private Dimension size;       // panel's size
+	private Point origin;         // screen coordinates of graph's origin in pixels
+	private DimensionF scale;     // size of one unit in pixels
+	private Dimension size;       // panel's size in pixels
 	private boolean drawAxesFlag; // flag for drawing axes
 	private boolean drawGridFlag; // flag for drawing grid
 	private boolean drawNumFlag;  // flag for drawing numbers on axes
-	private Point mouseLast;      // last cursor position
+	private Point mouseLast;      // last cursor position in screen coordinates
 	private Color gridColor;      // color of the grid and axes
-	private DimensionF tick;      // distance between axis labels
+	private DimensionF tick;      // grid density in global coordinates
 	private ArrayList<Function> functions;
 	private String debugString;   // string used for debug purposes
 	
@@ -65,7 +65,7 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		
 		for(Function f : functions)
 		{
-			f.draw(g, origin, scale, size);
+			f.draw(g, this);
 		}
 		
 		Brush.drawString(g, debugString, new Point(20,20), Color.RED, 15);
@@ -105,18 +105,26 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 	}
 	
 	private void drawNumbers(Graphics g)
-	{		
+	{
+		Point p;
+		
+		p = new Point();
+		
 		if(tick.width*scale.width < 1)
 			return;
 		
 		for(int i = origin.x % (int)(tick.width*scale.width); i < size.width; i += tick.width*scale.width) // numbers on x-axis
 		{
-			Brush.drawString(g, Math.round((tick.width*i - origin.x)/scale.width) + "", new Point(i,origin.y), gridColor, 10);
+			p.x = i;
+			p.y = origin.y;			
+			Brush.drawString(g, Math.round(screenToGlobalX(i)) + "", p, gridColor, 10);
 		}
 		
 		for(int i = origin.y % (int)(tick.height*scale.height); i < size.height; i += tick.height*scale.height) // numbers on y-axis
 		{
-			Brush.drawString(g, Math.round(-(tick.height*i - origin.y)/scale.height) + "", new Point(origin.x,i), gridColor, 10);
+			p.x = origin.x;
+			p.y = i;
+			Brush.drawString(g, Math.round(screenToGlobalY(i)) + "", p, gridColor, 10);
 		}
 	}
 	
@@ -128,6 +136,38 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 	public void removeFunction(int index)
 	{
 		functions.remove(index);
+	}
+	
+	public double screenToGlobalX(int screenX)
+	{
+		return (-origin.x + screenX) / scale.width;
+	}
+	
+	public double screenToGlobalY(int screenY)
+	{
+		return (-origin.y + screenY) / scale.height;
+	}
+	
+	public int globalToScreenX(double globalX)
+	{
+		return (int) (globalX*scale.width + origin.x);
+	}
+	
+	public int globalToScreenY(double globalY)
+	{
+		return (int) (globalY*scale.height + origin.y);
+	}
+	
+	// GETTERS
+	
+	public Point getOrigin()
+	{
+		return origin;
+	}
+	
+	public DimensionF getScale()
+	{
+		return scale;
 	}
 	
 	// SETTERS
