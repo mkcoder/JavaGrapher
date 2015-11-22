@@ -15,8 +15,9 @@ public class Main
 		drawManager = new DrawManager();
 		rightPanel = new RightPanel(drawManager);
 		frame.add(rightPanel,BorderLayout.EAST);
-		frame.add(drawManager, BorderLayout.CENTER);
+		frame.add(drawManager, BorderLayout.CENTER);		
 		frame.setVisible(true);
+		drawManager.initialize();
 	}
 
 }

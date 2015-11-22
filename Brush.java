@@ -4,9 +4,14 @@ public class Brush
 {
 	public static void drawString(Graphics g, String text, Point location, Color color, int size)
 	{
+		drawString(g, text, location, color, size, Font.PLAIN);
+	}
+	
+	public static void drawString(Graphics g, String text, Point location, Color color, int size, int style)
+	{
 		Font font;
 		
-		font = new Font("SansSerif", Font.PLAIN, size);
+		font = new Font("SansSerif", style, size);
 		g.setFont(font);
 		g.setColor(color);
 		
