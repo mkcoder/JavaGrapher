@@ -24,4 +24,10 @@ public class Brush
 		((Graphics2D)g).setStroke(new BasicStroke(thickness));
 		g.drawLine(p1.x, p1.y, p2.x, p2.y);
 	}
+	
+	public static void fillRect(Graphics g, Point location, Dimension size, Color color)
+	{
+		g.setColor(color);
+		g.fillRect(location.x, location.y, size.width, size.height);
+	}
 }
