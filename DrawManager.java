@@ -58,8 +58,8 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 	{
 		super.paintComponent(g);
 		size = getSize();
-		screenOrigin.x = (int)(origin.x*size.width);
-		screenOrigin.y = (int)(origin.y*size.height);
+		screenOrigin.x = globalToScreenX(0);
+		screenOrigin.y = globalToScreenY(0);
 		
 		if(drawGridFlag)
 		{
@@ -198,15 +198,15 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		
 		Brush.fillRect(g, location, dim, color);
 		
-		location.y += size.width/58;
+		location.y += size.width/58; // move down
 		location.x += 3;
 		Brush.drawString(g, "Cusor", location, Color.BLACK, fontSize);
 		
-		location.y += size.width/58;
+		location.y += size.width/58; // move down
 		s = String.format("X:%.3f", screenToGlobalX(mouseLast.x));
 		Brush.drawString(g, s, location, Color.BLACK, fontSize);
 		
-		location.y += size.width/58;
+		location.y += size.width/58; // move down
 		s = String.format("Y:%.3f", screenToGlobalY(mouseLast.y));
 		Brush.drawString(g, s, location, Color.BLACK, fontSize);
 	}
@@ -233,12 +233,12 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 	
 	public int globalToScreenX(double globalX)
 	{
-		return (int) (globalX*scale.width + screenOrigin.x);
+		return (int)(origin.x*size.width + globalX*scale.width);
 	}
 	
 	public int globalToScreenY(double globalY)
 	{
-		return (int) (globalY*scale.height + screenOrigin.y);
+		return (int)(origin.y*size.height + globalY*scale.height);
 	}
 	
 	// GETTERS
