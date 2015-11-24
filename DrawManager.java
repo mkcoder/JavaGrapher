@@ -11,7 +11,7 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 	
 	private PointF origin;          //
 	private Point screenOrigin;     // location of orgin in screen coordinates
-	private DimensionF scale;       // size of one unit in pixels
+	private DimensionF scale;       // size of one unit in pixels (pixels per unit)
 	private DimensionF tick;        // grid density in global coordinates	
 	private Dimension size;         // panel's size in pixels
 	private Dimension lastSize;     // panel's size before resizing
@@ -86,6 +86,7 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 			drawCursorCoords(g);
 		}
 		
+		debugString = size.width + "";
 		Brush.drawString(g, debugString, new Point(20,20), Color.RED, 15);
 	}
 	
@@ -325,9 +326,9 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 			
 		}
 		else if(SwingUtilities.isLeftMouseButton(e)) // left click pans
-		{			
-			origin.x -= (double)(mouseLast.x - e.getX()) / scale.width;
-			origin.y -= (double)(mouseLast.y - e.getY()) / scale.height;
+		{
+			origin.x -= 1.0/size.width * (double)(mouseLast.x - e.getX());
+			origin.y -= 1.0/size.height * (double)(mouseLast.y - e.getY());
 		}
 		
 		mouseLast.setLocation(e.getX(),e.getY());
