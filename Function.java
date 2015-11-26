@@ -7,6 +7,7 @@ public class Function
 {
 	private String expression;
 	private Color color;
+	private boolean visible;
 	
 	public Function(String expr, Color color)
 	{
@@ -44,5 +45,15 @@ public class Function
 			
 			Brush.drawLine(g, p1, p2, color, 1);
 		}
+	}
+	
+	public void setVisible(boolean flag)
+	{
+		visible = flag;
+	}
+	
+	public void setColor(Color color)
+	{
+		this.color = color;
 	}
 }
