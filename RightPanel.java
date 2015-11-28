@@ -210,7 +210,8 @@ public class RightPanel extends JPanel
 			public void actionPerformed(ActionEvent e) {
 				if ( lineFunction.getText().length() <= 0 ) return;
 				System.out.println(lineFunction.getText());
-				drawManager.addFunction(new Function(lineFunction.getText(), new Color(0,0,0)));
+				drawManager.addFunction(new Function(lineFunction.getText(), 
+						new Color(0,0,0), drawManager));
 				addRow(lineFunction.getText(), dtm);
 				table.updateUI();
 			}
@@ -221,8 +222,9 @@ public class RightPanel extends JPanel
 		functionInputPanel.add(lineFunction, BorderLayout.NORTH);
 		functionInputPanel.add(add_function, BorderLayout.NORTH);
 
-		table.getColumn("OPTION").setCellEditor(new OptionEditor(drawManager));
 		table.getColumn("INDEX").setCellEditor(new OptionEditor(false));
+		table.getColumn("EXPRESSION").setCellEditor(new OptionEditor(false));
+		table.getColumn("OPTION").setCellEditor(new OptionEditor(drawManager));
 
 		// create a table frame with the headers on top and the table on the center
 		tableHolderPanel.setLayout(new BorderLayout());
