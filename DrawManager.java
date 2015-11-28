@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -37,10 +36,10 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		addComponentListener(this);
 		scale = new DimensionF(40, 40);
 		gridColor = Color.BLACK;
-		tick = new DimensionF(1,1);
+		tick = new DimensionF(0.5, 0.5);
 		functions = new ArrayList<Function>();
 		debugString = "";
-		origin = new PointF(0.5,0.5);
+		origin = new PointF(1, 1);
 		screenOrigin = new Point();
 		mouseLast = new Point();
 		
@@ -61,32 +60,31 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		screenOrigin.x = globalToScreenX(0);
 		screenOrigin.y = globalToScreenY(0);
 		
-		if(drawGridFlag)
+		if(drawGridFlag) // draw grid
 		{
 			drawGrid(g);
 		}
 		
-		if(drawAxesFlag)
+		if(drawAxesFlag) //draw axes
 		{
 			drawAxes(g);
 		}
 		
-		if(drawNumFlag)
+		if(drawNumFlag) // draw numbers on axes
 		{
 			drawNumbers(g);
 		}
 		
-		for(Function f : functions)
+		for(Function f : functions) // draw functions
 		{
 			f.draw(g, this);
 		}
 		
-		if(drawCursorFlag)
+		if(drawCursorFlag) // draw cursor coordinates
 		{
 			drawCursorCoords(g);
 		}
-		
-		debugString = size.width + "";
+
 		Brush.drawString(g, debugString, new Point(20,20), Color.RED, 15);
 	}
 	
@@ -127,7 +125,7 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 			return;
 		}
 		
-		for(int i = screenOrigin.x % (int)(tick.width*scale.width); i < size.width; i += tick.width*scale.width) // vertical grid lines
+		/*for(int i = screenOrigin.x % (int)(tick.width*scale.width); i < size.width; i += tick.width*scale.width) // vertical grid lines
 		{
 			start.x = i;
 			start.y = 0;
@@ -143,6 +141,16 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 			start.y = i;
 			end.x = size.width;
 			end.y = i;
+			
+			Brush.drawLine(g, start, end, color, 1);
+		}*/
+		
+		for(int i = 0; i<50; i++) // vertical grid lines
+		{
+			start.x = globalToScreenX(i*tick.width);
+			start.y = 0;
+			end.x = globalToScreenX(i*tick.width);
+			end.y = size.height;
 			
 			Brush.drawLine(g, start, end, color, 1);
 		}
@@ -222,21 +230,9 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		functions.remove(index);
 	}
 	
-	public void setFunctionColor(int index, Color color)
+	public Function getFunction(int index)
 	{
-		functions.get(index).setColor(color);
-	}
-	public void setFunctionExpression(int index, String exp)
-	{
-		functions.get(index).setExpression(exp);
-	}
-	public void setFunctionVisible(int index, boolean flag)
-	{
-		functions.get(index).setVisible(flag);
-	}
-	public ArrayList<Function> getFunctions()
-	{
-		return functions;
+		return functions.get(index);
 	}
 	
 	public double screenToGlobalX(int screenX)
