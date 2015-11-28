@@ -109,8 +109,9 @@ public class RightPanel extends JPanel
 					// TODO Auto-generated method stub
 					int index = new Integer(table.getModel()
 							.getValueAt(row, column-2).toString());
-					dm.setFunctionColor(index, 
-					JColorChooser.showDialog(dialog, "Choose a color", userColor));
+					dm.getFunction(index)
+					.setColor(JColorChooser
+							.showDialog(dialog, "Choose a color", userColor));					
 				}
 			});
 			options_value.add(color_button);
@@ -161,9 +162,6 @@ public class RightPanel extends JPanel
 		dtm.setColumnIdentifiers(tableColumns);
 		table.setModel(dtm);	
 		
-		for (Function fun : drawManager.getFunctions()) {
-			addRow(fun.getExpression(), dtm);			
-		}		
 		
 		// add event handlers here
 		add_function.addActionListener(new ActionListener() {
@@ -187,7 +185,7 @@ public class RightPanel extends JPanel
 		
 		setPreferredSize(new Dimension(340,1000));
 	}
-	
+		
 	public static void addRow(String s, DefaultTableModel dtm) 
 	{
 		dtm.addRow(new Object[] {
