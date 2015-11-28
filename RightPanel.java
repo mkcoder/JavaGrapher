@@ -103,6 +103,15 @@ public class RightPanel extends JPanel
 			options_value.add(new JLabel("Color: "), BorderLayout.EAST);			
 			color_button = new JButton("Change color");
 			
+			update.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					dm.paintComponent(getGraphics());
+				}
+			});
+			
 			color_button.addActionListener(new ActionListener() {				
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
@@ -115,11 +124,8 @@ public class RightPanel extends JPanel
 				}
 			});
 			options_value.add(color_button);
-
-			options_value.add(update, BorderLayout.SOUTH);
-			
-			dialog.getContentPane().add(options_value);
-			
+			options_value.add(update, BorderLayout.SOUTH);			
+			dialog.getContentPane().add(options_value);			
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);	
 			
 			dialog.pack();
@@ -164,6 +170,7 @@ public class RightPanel extends JPanel
 		
 		
 		// add event handlers here
+		
 		add_function.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
