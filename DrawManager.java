@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-public class DrawManager extends JPanel implements MouseMotionListener, MouseListener, ComponentListener
+public class DrawManager extends JPanel implements MouseMotionListener, MouseListener, ComponentListener, ActionListener
 {
 	public static final double SCALE_SEN = 0.01; // sensitivity of scaling
 	
@@ -21,6 +21,7 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 	private Point mouseLast;        // last cursor position in screen coordinates
 	private Color gridColor;        // color of the grid and axes
 	private String debugString;     // string used for debug purposes
+	private Timer timer;
 	
 	private ArrayList<Function> functions; // all functions
 	
@@ -42,6 +43,8 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		origin = new PointF(0.5, 0.5);
 		screenOrigin = new Point();
 		mouseLast = new Point();
+		timer = new Timer(20, this);
+		timer.start(); 
 	}
 	
 	public void initialize()
@@ -421,5 +424,14 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 	@Override
     public void componentShown(ComponentEvent e)
 	{   
+    }
+
+	@Override
+    public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource() == timer)
+		{
+			repaint();
+		}
     }
 }
