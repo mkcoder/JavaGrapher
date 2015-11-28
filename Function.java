@@ -56,4 +56,18 @@ public class Function
 	{
 		this.color = color;
 	}
+	
+	public String getExpression()
+	{
+		return expression;
+	}
+	
+	public void setExpression(String expression)
+	{
+		this.expression = expression;
+	}
+
+	public Color getColor() {
+		return color;
+	}
 }

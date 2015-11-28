@@ -21,21 +21,29 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
+import javafx.scene.layout.Border;
+
 public class RightPanel extends JPanel
 {
+	static int indexCount = 0;
 	public class OptionEditor implements TableCellEditor {
-
-
+		private DrawManager dm; 
+		
+		public OptionEditor(){}
+		
+		public OptionEditor(DrawManager dm)  
+		{
+			this.dm = dm;
+		}
+		
 		@Override
 		public void addCellEditorListener(CellEditorListener l) {
 			// TODO Auto-generated method stub
-
 		}
-
+		
 		@Override
 		public void cancelCellEditing() {
 			// TODO Auto-generated method stub
-
 		}
 
 		@Override
@@ -72,12 +80,13 @@ public class RightPanel extends JPanel
 		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
 				int column) {
 			// TODO Auto-generated method stub	
+			JButton update = new JButton("Update");
 			JFrame frame = new JFrame();
 			JDialog dialog = new JDialog(frame);
 			JPanel options_value = new JPanel();			
 			JTextField function;
 			JColorChooser color;
-			final Color userColor = null;
+			Color userColor = null;
 			JButton color_button;
 			
 			// set up size, location and title of the dialog box
@@ -87,21 +96,26 @@ public class RightPanel extends JPanel
 			dialog.setTitle("Options for " + table.getModel().getValueAt(row, column-1));
 			
 			options_value.add(new JLabel("Function: "));
-			function = new JTextField();
+			function = new JTextField(25);
 			function.setText(table.getModel().getValueAt(row, column-1).toString());
 			options_value.add(function);
 			
-			options_value.add(new JLabel("Color: "));
-			
+			options_value.add(new JLabel("Color: "), BorderLayout.EAST);			
 			color_button = new JButton("Change color");
+			
 			color_button.addActionListener(new ActionListener() {				
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					// TODO Auto-generated method stub
-					JColorChooser.showDialog(dialog, "Choose a color", userColor);
+					int index = new Integer(table.getModel()
+							.getValueAt(row, column-2).toString());
+					dm.setFunctionColor(index, 
+					JColorChooser.showDialog(dialog, "Choose a color", userColor));
 				}
 			});
 			options_value.add(color_button);
+
+			options_value.add(update, BorderLayout.SOUTH);
 			
 			dialog.getContentPane().add(options_value);
 			
@@ -130,7 +144,8 @@ public class RightPanel extends JPanel
 	public RightPanel(DrawManager _drawManager)
 	{		
 
-		final DrawManager drawManager = _drawManager;;
+		final DrawManager drawManager = _drawManager;
+		
 		panel = new JPanel();
 		function_panel = new JPanel();		
 		dtm = new DefaultTableModel(new String[] {
@@ -146,36 +161,19 @@ public class RightPanel extends JPanel
 		dtm.setColumnIdentifiers(tableColumns);
 		table.setModel(dtm);	
 		
-		dtm.addRow(new Object[] {
-				"1",
-				"y=x^2",
-				"Edit"
-				
-		});
-		dtm.addRow(new Object[] {
-				"1",
-				"y=x-2",
-				"Edit"
-				
-		});
-		dtm.addRow(new Object[] {
-				"1",
-				"y=x*2",
-				"Edit"
-				
-		});
-		dtm.addRow(new Object[] {
-				"1",
-				"y=x+2",
-				"Edit"
-				
-		});
+		for (Function fun : drawManager.getFunctions()) {
+			addRow(fun.getExpression(), dtm);			
+		}		
 		
 		// add event handlers here
 		add_function.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if ( lineFunction.getText().length() <= 0 ) return;
+				System.out.println(lineFunction.getText());
 				drawManager.addFunction(new Function(lineFunction.getText(), new Color(0,0,0)));
+				addRow(lineFunction.getText(), dtm);
+				table.updateUI();
 			}
 		});
 		
@@ -185,8 +183,18 @@ public class RightPanel extends JPanel
 		add(function_panel,BorderLayout.WEST);
 		
 		add(table, BorderLayout.WEST);
-		table.getColumn("Options").setCellEditor(new OptionEditor());
+		table.getColumn("Options").setCellEditor(new OptionEditor(drawManager));
 		
 		setPreferredSize(new Dimension(340,1000));
 	}
+	
+	public static void addRow(String s, DefaultTableModel dtm) 
+	{
+		dtm.addRow(new Object[] {
+				indexCount++,
+				s,
+				"Edit"
+		});
+	}
+	
 }

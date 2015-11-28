@@ -226,10 +226,17 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 	{
 		functions.get(index).setColor(color);
 	}
-	
+	public void setFunctionExpression(int index, String exp)
+	{
+		functions.get(index).setExpression(exp);
+	}
 	public void setFunctionVisible(int index, boolean flag)
 	{
 		functions.get(index).setVisible(flag);
+	}
+	public ArrayList<Function> getFunctions()
+	{
+		return functions;
 	}
 	
 	public double screenToGlobalX(int screenX)
