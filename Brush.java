@@ -30,4 +30,10 @@ public class Brush
 		g.setColor(color);
 		g.fillRect(location.x, location.y, size.width, size.height);
 	}
+	
+	public static void fillCircle(Graphics g, Point location, int radius, Color color)
+	{
+	    g.setColor(color);
+        g.fillOval(location.x, location.y, 2*radius, 2*radius);
+	}
 }
