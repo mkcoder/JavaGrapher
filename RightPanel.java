@@ -3,11 +3,14 @@ import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.EventObject;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -29,6 +32,15 @@ public class RightPanel extends JPanel
 	static int indexCount = 0;
 	public class OptionEditor implements TableCellEditor {
 		private DrawManager dm; 
+		private JButton update;			
+		private JFrame frame;
+		private JDialog dialog; 
+		private JPanel options_value;			
+		private JTextField function;
+		private Color userColor;
+		private JButton color_button;
+		private GridLayout layout;
+		private JCheckBox checkVisible;
 		
 		public OptionEditor(){}
 		
@@ -80,37 +92,34 @@ public class RightPanel extends JPanel
 		@Override
 		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
 				int column) {
-			// TODO Auto-generated method stub	
-			JButton update = new JButton("Update");
-			JFrame frame = new JFrame();
-			JDialog dialog = new JDialog(frame);
-			JPanel options_value = new JPanel();			
-			JTextField function;
-			JColorChooser color;
-			Color userColor = null;
-			JButton color_button;
-			
+
+			int index = new Integer(table.getModel()
+					.getValueAt(row, column-2).toString())-1;
+			frame  = new JFrame();
+			dialog = new JDialog(frame);		
+			options_value = new JPanel();
+			userColor = null;
+			update = new JButton("Update");
+			function = new JTextField(25);
+			color_button = new JButton("Change color");
+			layout = new GridLayout(4, 2);
+			checkVisible = new JCheckBox("Visible");
 			// set up size, location and title of the dialog box
 			dialog.setLocation(100, 100);
-			dialog.setPreferredSize(new Dimension(350, 350));
+			dialog.setPreferredSize(new Dimension(350, 150));
 			dialog.setResizable(false);			
-			dialog.setTitle("Options for " + table.getModel().getValueAt(row, column-1));
-			function = new JTextField(25);
+			dialog.setTitle("Options for " + table.getModel().getValueAt(row, column-1));					
 			function.setText(table.getModel().getValueAt(row, column-1).toString());
-			color_button = new JButton("Change color");
-
+			checkVisible.setSelected(dm.getFunction(index).getVisible());
 			// event handlers
 			update.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					int index = new Integer(table.getModel()
-							.getValueAt(row, column-2).toString());
 					String expression = function.getText(); 
 							
 							table.getModel()
 							.setValueAt(expression, row, column-1);
-					boolean visible = true;
+					boolean visible = checkVisible.isSelected();
 					Function f = dm.getFunction(index);
 					f.setExpression(expression);
 					f.setVisible(visible);
@@ -121,8 +130,8 @@ public class RightPanel extends JPanel
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					// TODO Auto-generated method stub
-					int index = new Integer(table.getModel()
-							.getValueAt(row, column-2).toString());
+					int index = new Integer((table.getModel()
+							.getValueAt(row, column-2)).toString())-1;
 					dm.getFunction(index)
 					.setColor(JColorChooser
 							.showDialog(dialog, "Choose a color", userColor));					
@@ -130,14 +139,17 @@ public class RightPanel extends JPanel
 			});
 			
 
+			options_value.setLayout(layout);
 			options_value.add(new JLabel("Function: "));
 			options_value.add(function);
-			options_value.add(new JLabel("Color: "), BorderLayout.EAST);		
-			options_value.add(color_button, BorderLayout.WEST);
-			options_value.add(update, BorderLayout.PAGE_START);	
+			options_value.add(new JLabel("Color: "));		
+			options_value.add(color_button);
+			options_value.add(new JLabel("Visible: "));
+			options_value.add(checkVisible);
+			options_value.add(update);	
 			
-			dialog.getContentPane().setLayout(new BorderLayout());
-			dialog.getContentPane().add(options_value);			
+			
+			dialog.add(options_value);			
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);	
 			
 			dialog.pack();
@@ -203,6 +215,7 @@ public class RightPanel extends JPanel
 		functionInputPanel.add(new JLabel("Y="), BorderLayout.PAGE_START);
 		functionInputPanel.add(lineFunction, BorderLayout.NORTH);
 		functionInputPanel.add(add_function, BorderLayout.NORTH);
+
 		table.getColumn("OPTION").setCellEditor(new OptionEditor(drawManager));
 
 		// create a table frame with the headers on top and the table on the center
@@ -218,7 +231,7 @@ public class RightPanel extends JPanel
 	public static void addRow(String s, DefaultTableModel dtm) 
 	{
 		dtm.addRow(new Object[] {
-				indexCount++,
+				++indexCount,
 				s,
 				"Edit"
 		});

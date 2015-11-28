@@ -66,6 +66,10 @@ public class Function
 	{
 		visible = flag;
 	}
+	public boolean getVisible()
+	{
+		return visible;
+	}
 	
 	public void setColor(Color color)
 	{
