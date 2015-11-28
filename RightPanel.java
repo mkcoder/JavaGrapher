@@ -32,6 +32,7 @@ public class RightPanel extends JPanel
 	static int indexCount = 0;
 	public class OptionEditor implements TableCellEditor {
 		private DrawManager dm; 
+		private boolean isEditable; 
 		private JButton update;			
 		private JFrame frame;
 		private JDialog dialog; 
@@ -42,13 +43,17 @@ public class RightPanel extends JPanel
 		private GridLayout layout;
 		private JCheckBox checkVisible;
 		
-		public OptionEditor(){}
+		public OptionEditor(){ isEditable = true; }
 		
 		public OptionEditor(DrawManager dm)  
-		{
+		{			
+			this();
 			this.dm = dm;
 		}
-		
+		public OptionEditor(boolean isEditable)  
+		{
+			this.isEditable = isEditable;
+		}
 		@Override
 		public void addCellEditorListener(CellEditorListener l) {
 			// TODO Auto-generated method stub
@@ -68,7 +73,7 @@ public class RightPanel extends JPanel
 		@Override
 		public boolean isCellEditable(EventObject anEvent) {
 			// TODO Auto-generated method stub
-			return true;
+			return isEditable;
 		}
 
 		@Override
@@ -217,6 +222,7 @@ public class RightPanel extends JPanel
 		functionInputPanel.add(add_function, BorderLayout.NORTH);
 
 		table.getColumn("OPTION").setCellEditor(new OptionEditor(drawManager));
+		table.getColumn("INDEX").setCellEditor(new OptionEditor(false));
 
 		// create a table frame with the headers on top and the table on the center
 		tableHolderPanel.setLayout(new BorderLayout());
