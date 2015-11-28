@@ -39,7 +39,7 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		tick = new DimensionF(0.5, 0.5);
 		functions = new ArrayList<Function>();
 		debugString = "";
-		origin = new PointF(1, 1);
+		origin = new PointF(0.5, 0.5);
 		screenOrigin = new Point();
 		mouseLast = new Point();
 		
@@ -111,6 +111,7 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		Color color; // final color of the grid
 		Point start; // start of each line
 		Point end;   // end of each line
+		double i;    // iterator number
 		
 		start = new Point();
 		end = new Point();
@@ -125,34 +126,30 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 			return;
 		}
 		
-		/*for(int i = screenOrigin.x % (int)(tick.width*scale.width); i < size.width; i += tick.width*scale.width) // vertical grid lines
+		i = screenToGlobalX(0) - screenToGlobalX(0) % tick.width;
+		
+		while(i < screenToGlobalX(size.width)) // vertical grid lines
 		{
-			start.x = i;
+			start.x = globalToScreenX(i);
 			start.y = 0;
-			end.x = i;
+			end.x = globalToScreenX(i);
 			end.y = size.height;
 			
 			Brush.drawLine(g, start, end, color, 1);
+			i += tick.width;
 		}
 		
-		for(int i = screenOrigin.y % (int)(tick.height*scale.height); i < size.height; i += tick.height*scale.height) // horizontal grid lines
+		i = screenToGlobalY(size.height) - screenToGlobalY(size.height) % tick.height;
+		
+		while(i < screenToGlobalY(0)) // vertical grid lines
 		{
 			start.x = 0;
-			start.y = i;
+			start.y = globalToScreenY(-i);
 			end.x = size.width;
-			end.y = i;
+			end.y = globalToScreenY(-i);
 			
 			Brush.drawLine(g, start, end, color, 1);
-		}*/
-		
-		for(int i = 0; i<50; i++) // vertical grid lines
-		{
-			start.x = globalToScreenX(i*tick.width);
-			start.y = 0;
-			end.x = globalToScreenX(i*tick.width);
-			end.y = size.height;
-			
-			Brush.drawLine(g, start, end, color, 1);
+			i += tick.height;
 		}
 	}
 	
@@ -161,6 +158,7 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		Point location; // helper point
 		int fontSize;   // font size
 		String coord;   // coordinate as string
+		double i;       // iterator number
 		
 		fontSize = 11;
 		location = new Point();
@@ -170,25 +168,47 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 			return;
 		}
 		
-		for(int i = screenOrigin.x % (int)(tick.width*scale.width); i < size.width; i += tick.width*scale.width) // numbers on x-axis
+		i = screenToGlobalX(0) - screenToGlobalX(0) % tick.width;
+		
+		while(i < screenToGlobalX(size.width)) // vertical grid lines
 		{
-			location.x = i + 3;
+			if(i == Math.floor(i))
+			{
+				coord = (int)i + "";
+			}
+			else
+			{
+				coord = i + "";
+			}
+			
+			location.x = globalToScreenX(i) + 3;
 			location.y = screenOrigin.y + 11;
-			coord = Math.round(screenToGlobalX(i)) + "";
 			
 			Brush.drawString(g, coord, location, gridColor, fontSize);
+			i += tick.width;
 		}
 		
-		for(int i = screenOrigin.y % (int)(tick.height*scale.height); i < size.height; i += tick.height*scale.height) // numbers on y-axis
+		i = screenToGlobalY(size.height) - screenToGlobalY(size.height) % tick.height;
+		
+		while(i < screenToGlobalY(0)) // vertical grid lines
 		{			
-			location.x = screenOrigin.x - 6 - g.getFontMetrics(g.getFont()).stringWidth(Math.round(screenToGlobalY(i))+"");
-			location.y = i - 2;
-			coord = Math.round(screenToGlobalY(i)) + "";
+			if(i == Math.floor(i))
+			{
+				coord = (int)i + "";
+			}
+			else
+			{
+				coord = i + "";
+			}
 			
-			if(Math.round(screenToGlobalY(i)) != 0) // don't draw 0 again
+			location.x = screenOrigin.x - 6 - g.getFontMetrics(g.getFont()).stringWidth(coord);
+			location.y = globalToScreenY(-i) - 2;
+			
+			if(i != 0) // don't draw 0 again
 			{
 				Brush.drawString(g, coord, location, gridColor, fontSize);
 			}
+			i += tick.height;
 		}
 	}
 	
@@ -223,16 +243,12 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 	public void addFunction(Function f)
 	{
 		functions.add(f);
+		getParent().repaint();
 	}
 	
 	public void removeFunction(int index)
 	{
 		functions.remove(index);
-	}
-	
-	public Function getFunction(int index)
-	{
-		return functions.get(index);
 	}
 	
 	public double screenToGlobalX(int screenX)
@@ -256,6 +272,11 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 	}
 	
 	// GETTERS
+	
+	public Function getFunction(int index)
+	{
+		return functions.get(index);
+	}
 	
 	public DimensionF getScale()
 	{

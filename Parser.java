@@ -1,7 +1,20 @@
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+
 public class Parser
 {
 	public static double evaluate(String expr)
 	{
-		return (1/(new Double(expr.substring(4, expr.length()-1))));
+		ScriptEngineManager mgr = new ScriptEngineManager();
+	    ScriptEngine engine = mgr.getEngineByName("JavaScript");
+	    try 
+	    {
+	        return (double) engine.eval(expr);
+        } 
+	    catch (ScriptException e)
+	    {
+	    	return 0;
+        }
 	}
 }
