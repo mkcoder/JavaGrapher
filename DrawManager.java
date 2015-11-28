@@ -42,8 +42,6 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		origin = new PointF(0.5, 0.5);
 		screenOrigin = new Point();
 		mouseLast = new Point();
-		
-		functions.add(new Function("sin(x)",Color.RED));
 	}
 	
 	public void initialize()
