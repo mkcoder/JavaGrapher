@@ -13,16 +13,17 @@ public class ParticleGenerator
      * @param particles
      * @param positions
      */
-    public ParticleGenerator(String expression, Color color)
+    public ParticleGenerator(String expression, Color color, DrawManager d)
     {  
         this.particleColor = color;
         this.expression = expression;
         this.particles = new ArrayList<Particle>();
         this.positions = new ArrayList<Point>();
-     
+        initPositions(d);
+        initParticles(d);  
     }
     
-    public void intPositions(DrawManager d)
+    public void initPositions(DrawManager d)
     {
         double x;
         double y1;
@@ -43,7 +44,7 @@ public class ParticleGenerator
         }
     }
     
-    public void intParticles(DrawManager d)
+    public void initParticles(DrawManager d)
     {
         for(int i = 0; i < 500; i++)
         {
@@ -54,38 +55,8 @@ public class ParticleGenerator
     }
     public void draw(Graphics g, DrawManager d)
     {
-        
-        intPositions(d);
-        intParticles(d);  
-       int x = 100;
-        while(x > 0)
-        {
-            
-        
         update();
         render(g);
-
-                    new Thread()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            try
-                            {
-                             //System.out.println("here");
-                             Thread.sleep(1000/60);
-                             //System.out.println("after here");
-        
-                            }
-                            catch (InterruptedException e)
-                            {
-                                e.printStackTrace();
-                            }
-                        }
-                   }.start();
-           System.out.println(x);
-        x--;
-        }
     }
 
     private void update()
@@ -107,6 +78,9 @@ public class ParticleGenerator
             if(p.update(p1) || remove)
             {
                 particles.remove(i);
+                int randomLifeSpan = (int)(Math.random()*(positions.size()-1));
+                particles.add(new Particle(positions.get(0),3,randomLifeSpan,this.particleColor,0 ));
+                
             }
         }
     }
@@ -131,9 +105,8 @@ private class Particle
        /**
      * @param x
      * @param y
-     * @param dx
-     * @param dy
      * @param radius
+     * @param nextPosition
      * @param life
      * @param color
      */
