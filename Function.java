@@ -10,14 +10,14 @@ public class Function
 	private boolean visible;
 	private ParticleGenerator particles;
 	
-	public Function(String expr, Color color)
+	public Function(String expr, Color color, DrawManager d)
 	{
 		Color compl;
 		
 		compl = new Color(255 - color.getRed(), 255 - color.getGreen(), 255 - color.getBlue());		
 		this.color = color;
 		this.expression = expr;
-		particles = new ParticleGenerator(expression, compl);
+		particles = new ParticleGenerator(expression, compl, d);
 		visible = true;
 	}
 	
@@ -59,7 +59,7 @@ public class Function
 			Brush.drawLine(g, p1, p2, color, 1);
 		}
 		
-		//particles.draw(g, d);
+		particles.draw(g, d);
 	}
 	
 	public void setVisible(boolean flag)
