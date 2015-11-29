@@ -6,8 +6,8 @@ public class ParticleGenerator
 {
     private String expression;
     private ArrayList<Particle> particles;
-    private ArrayList<Point> positions;
     private Color particleColor;
+    private DrawManager drawManager;
     
    /**
      * @param particles
@@ -18,41 +18,10 @@ public class ParticleGenerator
         this.particleColor = color;
         this.expression = expression;
         this.particles = new ArrayList<Particle>();
-        this.positions = new ArrayList<Point>();
-        initPositions(d);
-        initParticles(d);  
+        this.drawManager = d; 
     }
-    
-    public void initPositions(DrawManager d)
-    {
-        double x;
-        double y1;
-        
-        for(int i = 0; i < d.getSize().width - 1; i++)
-        {
-            Point p;
-            
-            p = new Point();
-            
-            x = d.screenToGlobalX(i);
-            y1 = Parser.evaluate(expression.replace("x", x+""));
-            
-            p.x  = i;
-            p.y = d.globalToScreenY(-y1);  
-            
-            positions.add(i,p);
-        }
-    }
-    
-    public void initParticles(DrawManager d)
-    {
-        for(int i = 0; i < 500; i++)
-        {
-            int randomPosition = (int)(Math.random()*(d.getSize().width - 1));
-            int randomLifeSpan = (int)(Math.random()*(d.getSize().width - 1));
-            particles.add(new Particle(positions.get(randomPosition),3,randomLifeSpan,this.particleColor,randomPosition ));
-        }
-    }
+ 
+
     public void draw(Graphics g, DrawManager d)
     {
         update();
@@ -61,27 +30,72 @@ public class ParticleGenerator
 
     private void update()
     {
-        for(int i = 0; i < particles.size() - 1; i++)
+        if(particles.isEmpty())
+        {
+            Point p;
+            double x;
+            double y;
+            
+            x = drawManager.screenToGlobalX(0);
+            y = Parser.evaluate(expression.replace("x", x+""));
+            
+            int randomLifeSpan = (int)(Math.random()*(500));
+
+            p = new Point();
+            
+            p.x = 0;
+            p.y = drawManager.globalToScreenY(-y); 
+            
+            particles.add(new Particle(p,3,randomLifeSpan,this.particleColor));
+            return;
+        }
+       
+        for(int i = 0; i < particles.size(); i++)
         {
             boolean remove;
             Particle p;
             Point p1;
             int j;
+            double x;
+            double y;
             
             p = particles.get(i);
-            
             j = p.nextPosition;
             
-            remove  = j == positions.size()-1 ? true: false;
-            p1 = positions.get(j);
+            x = drawManager.screenToGlobalX(j);
+            y = Parser.evaluate(expression.replace("x", x+""));
             
-            if(p.update(p1) || remove)
+            p1 = new Point();
+            p1.x = j;
+            p1.y = drawManager.globalToScreenY(-y);                               
+
+            remove = p.update(p1);
+
+            
+            if(remove || (particles.size() < 500))
             {
-                particles.remove(i);
-                int randomLifeSpan = (int)(Math.random()*(positions.size()-1));
-                particles.add(new Particle(positions.get(0),3,randomLifeSpan,this.particleColor,0 ));
+                if(remove)
+                {
+                    particles.remove(i);
+                }
+                int randomLifeSpan = (int)(Math.random()*(500));
+                Point p2;
+                double x1;
+                double y2;
+                
+                x1 = drawManager.screenToGlobalX(0);
+                y2 = Parser.evaluate(expression.replace("x", x1+""));
+                
+                
+                p2 = new Point();
+                
+                p2.x = 0;
+                p2.y = drawManager.globalToScreenY(-y2); 
+                
+                particles.add(new Particle(p2,3,randomLifeSpan,this.particleColor));
                 
             }
+           
         }
     }
     
@@ -110,12 +124,12 @@ private class Particle
      * @param life
      * @param color
      */
-    public Particle(Point p, int radius, int life, Color color, int position)
+    public Particle(Point p, int radius, int life, Color color)
     {
         this.p = p;
         this.radius = radius;
         this.life = life;
-        this.nextPosition = position;
+        this.nextPosition = 1;
         this.color = color;
     }
     
@@ -125,6 +139,9 @@ private class Particle
         int red = (color.getRed()) -1;
         int blue = (color.getBlue()) -1;
         int green = (color.getGreen()) -1;
+        
+        nextPosition++;
+        
         this.p = p;
         life--;
         
