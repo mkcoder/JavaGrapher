@@ -52,6 +52,7 @@ public class ParticleGenerator
        
         for(int i = 0; i < particles.size(); i++)
         {
+            double particleGeneration;
             boolean remove;
             Particle p;
             Point p1;
@@ -70,9 +71,10 @@ public class ParticleGenerator
             p1.y = drawManager.globalToScreenY(-y);                               
 
             remove = p.update(p1);
+            particleGeneration = Math.random();
 
             
-            if(remove || (particles.size() < 500))
+            if(remove || (particles.size() < 500 && particleGeneration < 0.3))
             {
                 if(remove)
                 {
