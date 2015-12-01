@@ -36,12 +36,25 @@ public class RightPanel extends JPanel
 		private JButton update;			
 		private JFrame frame;
 		private JDialog dialog; 
-		private JPanel options_value;			
+		private JPanel options_value;
+		
+		private JPanel expression_options;
+		
+		private JPanel particle_options;
+		
 		private JTextField function;
 		private Color userColor;
 		private JButton color_button;
 		private GridLayout layout;
 		private JCheckBox checkVisible;
+		
+		// grid options
+		private JPanel grid_options;
+		private JButton showGridColorOptions;
+		private JButton showGridBGColorOptions;
+		private JCheckBox showGrid;
+		private JColorChooser gridColor;
+		private JTextField incrementSize;
 		
 		public OptionEditor(){ isEditable = true; }
 		
@@ -103,23 +116,38 @@ public class RightPanel extends JPanel
 			frame  = new JFrame();
 			dialog = new JDialog(frame);		
 			options_value = new JPanel();
+			expression_options = new JPanel();
+			grid_options = new JPanel();
+			particle_options = new JPanel();
+			showGrid = new JCheckBox("show grid");
+			showGridColorOptions = new JButton("change grid color");
+			showGridBGColorOptions = new JButton("change grid background color");
+			incrementSize = new JTextField();			
+			gridColor = new JColorChooser();
 			userColor = null;
 			update = new JButton("Update");
 			function = new JTextField(25);
-			color_button = new JButton("Change color");
+			color_button = new JButton("change line color");
 			layout = new GridLayout(4, 2);
 			checkVisible = new JCheckBox("Visible");
+			
 			// set up size, location and title of the dialog box
 			dialog.setLocation(100, 100);
-			dialog.setPreferredSize(new Dimension(350, 150));
+			dialog.setPreferredSize(new Dimension(500, 550));
 			dialog.setResizable(false);			
 			dialog.setTitle("Options for " + table.getModel().getValueAt(row, column-1));					
 			function.setText(table.getModel().getValueAt(row, column-1).toString());
 			checkVisible.setSelected(dm.getFunction(index).getVisible());
+			update.setSize(100, 150);
+//			incrementSize.setText(dm.);
+			
 			// event handlers
 			update.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					int index = new Integer((table.getModel()
+							.getValueAt(row, column-2)).toString())-1;
+					dm.showGrid(showGrid.isSelected());
 					String expression = function.getText(); 
 							
 							table.getModel()
@@ -143,20 +171,56 @@ public class RightPanel extends JPanel
 				}
 			});
 			
-
-			options_value.setLayout(layout);
-			options_value.add(new JLabel("Function: "));
-			options_value.add(function);
-			options_value.add(new JLabel("Color: "));		
-			options_value.add(color_button);
-			options_value.add(new JLabel("Visible: "));
-			options_value.add(checkVisible);
-			options_value.add(update);	
+			showGridColorOptions.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					// TODO Auto-generated method stub
+					int index = new Integer((table.getModel()
+							.getValueAt(row, column-2)).toString())-1;
+					dm.setGridColor(JColorChooser
+							.showDialog(dialog, "Choose a color", userColor));	
+				}
+			});
 			
+			showGridBGColorOptions.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					int index = new Integer((table.getModel()
+							.getValueAt(row, column-2)).toString())-1;
+					dm.setBackground(JColorChooser
+							.showDialog(dialog, "Choose a color", dm.getBackground()));
+				}
+			});
+			options_value.setLayout(new GridLayout(3, 0));
+			expression_options.setLayout(new GridLayout(0, 1));
+			grid_options.setLayout(new GridLayout(0, 1));
+			particle_options.setLayout(new GridLayout(0, 1));
+			
+			expression_options.add(new JLabel("Function: "));
+			expression_options.add(function);	
+			expression_options.add(color_button);
+			expression_options.add(new JLabel("Visible: "));
+			expression_options.add(checkVisible);
+			
+			options_value.add(new JLabel("Function options: " ));
+			options_value.add(expression_options);
+						
+			options_value.add(new JLabel("Grid options: " ));
+			grid_options.add(showGrid);
+			grid_options.add(showGridColorOptions);
+			grid_options.add(showGridBGColorOptions);
+			options_value.add(grid_options);
+			
+			options_value.add(new JLabel("Particle options: " ));
+			particle_options.add(update);	
+			options_value.add(particle_options);
 			
 			dialog.add(options_value);			
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);	
-			
+
 			dialog.pack();
 			dialog.setVisible(true);
 			return null;
