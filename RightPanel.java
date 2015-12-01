@@ -35,7 +35,6 @@ public class RightPanel extends JPanel
 	public class OptionEditor implements TableCellEditor {
 		private DrawManager dm; 
 		private boolean isEditable; 
-		private JButton update;			
 		private JFrame frame;
 		private JDialog dialog; 
 		private JPanel options_value;
@@ -114,7 +113,6 @@ public class RightPanel extends JPanel
 			grid_options = new JPanel();
 			particle_options = new JPanel();
 			userColor = null;
-			update = new JButton("Update");
 			function = new JTextField(25);
 			color_button = new JButton("change line color");
 			checkVisible = new JCheckBox("Visible", true);
@@ -127,27 +125,10 @@ public class RightPanel extends JPanel
 			dialog.setTitle("Options for " + table.getModel().getValueAt(row, column-1));					
 			function.setText(table.getModel().getValueAt(row, column-1).toString());
 			checkVisible.setSelected(dm.getFunction(index).getVisible());
-			update.setSize(100, 150);
+		
 //			incrementSize.setText(dm.);
 			
 			// event handlers
-			update.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					int index = new Integer((table.getModel()
-							.getValueAt(row, column-2)).toString())-1;
-					dm.getFunction(index).showParticles(showParticle.isSelected());
-					String expression = function.getText(); 
-							
-							table.getModel()
-							.setValueAt(expression, row, column-1);
-					boolean visible = checkVisible.isSelected();
-					Function f = dm.getFunction(index);
-					f.setExpression(expression);
-					f.setVisible(visible);
-				}
-			});
-			
 			color_button.addActionListener(new ActionListener() {				
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
@@ -160,6 +141,44 @@ public class RightPanel extends JPanel
 				}
 			});
 			
+			showParticle.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int index = new Integer((table.getModel()
+							.getValueAt(row, column-2)).toString())-1;
+					dm.getFunction(index).showParticles(showParticle.isSelected());
+				}
+			});
+			checkVisible.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+
+					int index = new Integer((table.getModel()
+							.getValueAt(row, column-2)).toString())-1;
+					Function f = dm.getFunction(index);
+					boolean visible = checkVisible.isSelected();
+					f.setVisible(visible);
+				}
+			});
+			function.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					String expression = function.getText(); 							
+							table.getModel()
+							.setValueAt(expression, row, column-1);
+					int index = new Integer((table.getModel()
+							.getValueAt(row, column-2)).toString())-1;
+					Function f = dm.getFunction(index);
+					f.setExpression(expression);
+				}
+			});
+			
+			
 			options_value.setLayout(new GridLayout(2, 0));
 			expression_options.setLayout(new GridLayout(0, 1));
 			particle_options.setLayout(new GridLayout(0, 1));
@@ -170,7 +189,6 @@ public class RightPanel extends JPanel
 			expression_options.add(checkVisible);
 			
 			particle_options.add(showParticle);
-			particle_options.add(update);	
 			
 			options_value.add(new JLabel("Function options: " ));
 			options_value.add(expression_options);
