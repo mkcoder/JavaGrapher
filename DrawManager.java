@@ -37,7 +37,7 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		addComponentListener(this);
 		scale = new DimensionF(40, 40);
 		gridColor = Color.BLACK;
-		tick = new DimensionF(0.5, 0.5);
+		tick = new DimensionF(1, 1);
 		functions = new ArrayList<Function>();
 		debugString = "";
 		origin = new PointF(0.5, 0.5);

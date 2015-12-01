@@ -59,7 +59,7 @@ public class Function
 			Brush.drawLine(g, p1, p2, color, 1);
 		}
 		
-		particles.draw(g, d);
+		particles.draw(g, d, color);
 	}
 	
 	public void setVisible(boolean flag)
@@ -84,6 +84,7 @@ public class Function
 	public void setExpression(String expression)
 	{
 		this.expression = expression;
+		this.particles.setExpression(expression);
 	}
 
 	public Color getColor() {
