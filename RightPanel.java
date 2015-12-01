@@ -62,17 +62,14 @@ public class RightPanel extends JPanel
 		}
 		@Override
 		public void addCellEditorListener(CellEditorListener l) {
-			// TODO Auto-generated method stub
 		}
 		
 		@Override
 		public void cancelCellEditing() {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public Object getCellEditorValue() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -84,19 +81,16 @@ public class RightPanel extends JPanel
 
 		@Override
 		public void removeCellEditorListener(CellEditorListener l) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public boolean shouldSelectCell(EventObject anEvent) {
-			// TODO Auto-generated method stub
 			return true;
 		}
 
 		@Override
 		public boolean stopCellEditing() {
-			// TODO Auto-generated method stub
 			return true;
 		}
 
@@ -132,7 +126,6 @@ public class RightPanel extends JPanel
 			color_button.addActionListener(new ActionListener() {				
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					// TODO Auto-generated method stub
 					int index = new Integer((table.getModel()
 							.getValueAt(row, column-2)).toString())-1;
 					dm.getFunction(index)
@@ -167,7 +160,6 @@ public class RightPanel extends JPanel
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
 					String expression = function.getText(); 							
 							table.getModel()
 							.setValueAt(expression, row, column-1);
