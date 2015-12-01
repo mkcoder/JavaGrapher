@@ -48,13 +48,6 @@ public class RightPanel extends JPanel
 		private GridLayout layout;
 		private JCheckBox checkVisible;
 		
-		// grid options
-		private JPanel grid_options;
-		private JButton showGridColorOptions;
-		private JButton showGridBGColorOptions;
-		private JCheckBox showGrid;
-		private JColorChooser gridColor;
-		private JTextField incrementSize;
 		
 		public OptionEditor(){ isEditable = true; }
 		
@@ -119,11 +112,6 @@ public class RightPanel extends JPanel
 			expression_options = new JPanel();
 			grid_options = new JPanel();
 			particle_options = new JPanel();
-			showGrid = new JCheckBox("show grid");
-			showGridColorOptions = new JButton("change grid color");
-			showGridBGColorOptions = new JButton("change grid background color");
-			incrementSize = new JTextField();			
-			gridColor = new JColorChooser();
 			userColor = null;
 			update = new JButton("Update");
 			function = new JTextField(25);
@@ -147,7 +135,6 @@ public class RightPanel extends JPanel
 				public void actionPerformed(ActionEvent e) {
 					int index = new Integer((table.getModel()
 							.getValueAt(row, column-2)).toString())-1;
-					dm.showGrid(showGrid.isSelected());
 					String expression = function.getText(); 
 							
 							table.getModel()
@@ -171,32 +158,8 @@ public class RightPanel extends JPanel
 				}
 			});
 			
-			showGridColorOptions.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					// TODO Auto-generated method stub
-					int index = new Integer((table.getModel()
-							.getValueAt(row, column-2)).toString())-1;
-					dm.setGridColor(JColorChooser
-							.showDialog(dialog, "Choose a color", userColor));	
-				}
-			});
-			
-			showGridBGColorOptions.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					int index = new Integer((table.getModel()
-							.getValueAt(row, column-2)).toString())-1;
-					dm.setBackground(JColorChooser
-							.showDialog(dialog, "Choose a color", dm.getBackground()));
-				}
-			});
 			options_value.setLayout(new GridLayout(3, 0));
 			expression_options.setLayout(new GridLayout(0, 1));
-			grid_options.setLayout(new GridLayout(0, 1));
 			particle_options.setLayout(new GridLayout(0, 1));
 			
 			expression_options.add(new JLabel("Function: "));
@@ -208,12 +171,6 @@ public class RightPanel extends JPanel
 			options_value.add(new JLabel("Function options: " ));
 			options_value.add(expression_options);
 						
-			options_value.add(new JLabel("Grid options: " ));
-			grid_options.add(showGrid);
-			grid_options.add(showGridColorOptions);
-			grid_options.add(showGridBGColorOptions);
-			options_value.add(grid_options);
-			
 			options_value.add(new JLabel("Particle options: " ));
 			particle_options.add(update);	
 			options_value.add(particle_options);
@@ -236,12 +193,25 @@ public class RightPanel extends JPanel
 	protected JTextField lineFunction;
 	protected JTable table;
 	
+	// grid optins
+	private JPanel grid_options;
+	private JButton showGridColorOptions;
+	private JButton showGridBGColorOptions;
+	private JCheckBox showGrid;
+	private JColorChooser gridColor;
+	private JTextField incrementSize;
+	
 	public RightPanel(DrawManager _drawManager)
 	{		
-
 		final DrawManager drawManager = _drawManager;
 		JScrollPane tablePane = new JScrollPane(table);
 		JFrame tableFrame = new JFrame();
+		grid_options = new JPanel();
+		showGrid = new JCheckBox("show grid");
+		showGridColorOptions = new JButton("change grid color");
+		showGridBGColorOptions = new JButton("change grid background color");
+		incrementSize = new JTextField();			
+		gridColor = new JColorChooser();
 		
 		functionInputPanel = new JPanel();		
 		tableHolderPanel = new JPanel();
@@ -281,6 +251,33 @@ public class RightPanel extends JPanel
 			}
 		});
 		
+		showGrid.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				drawManager.showGrid(showGrid.isSelected());
+			}
+		});
+		
+		showGridColorOptions.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				drawManager.setGridColor(JColorChooser
+						.showDialog(grid_options, "Choose a color", new Color(0, 0, 0)));	
+			}
+		});
+		
+		showGridBGColorOptions.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				drawManager.setBackground(JColorChooser
+						.showDialog(grid_options, "Choose a color", drawManager.getBackground()));
+			}
+		});
 		
 		functionInputPanel.add(new JLabel("Y="), BorderLayout.PAGE_START);
 		functionInputPanel.add(lineFunction, BorderLayout.NORTH);
@@ -295,7 +292,13 @@ public class RightPanel extends JPanel
 		tableHolderPanel.add(table.getTableHeader(), BorderLayout.NORTH);
 		tableHolderPanel.add(table, BorderLayout.CENTER);
 		
-		add(functionInputPanel);
+		grid_options.setLayout(new GridLayout(0, 1));
+		grid_options.add(showGrid);
+		grid_options.add(showGridColorOptions);
+		grid_options.add(showGridBGColorOptions);
+		
+		add(grid_options);
+		add(functionInputPanel);		
 		add(tableHolderPanel);
 		setPreferredSize(new Dimension(340,1000));
 	}
