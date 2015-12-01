@@ -27,6 +27,12 @@ public class ParticleGenerator
         update();
         render(g);
     }
+    
+    public void draw(Graphics g, DrawManager d, Color color)
+    {
+        update();
+        render(g, color);
+    }
 
     private void update()
     {
