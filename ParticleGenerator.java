@@ -109,6 +109,15 @@ public class ParticleGenerator
         }
 
     }
+    
+    private void render(Graphics g, Color color)
+    {
+        for(Particle p : particles)
+        {
+            p.render(g,color);
+        }
+
+    }
 
 private class Particle
    {
@@ -138,20 +147,15 @@ private class Particle
     public boolean update(Point p)
     {
         
-        int red = (color.getRed()) -1;
-        int blue = (color.getBlue()) -1;
-        int green = (color.getGreen()) -1;
+//        int red = (color.getRed()) -1;
+//        int blue = (color.getBlue()) -1;
+//        int green = (color.getGreen()) -1;
         
         nextPosition++;
-        
         this.p = p;
         life--;
         
-        red = red < 0 ? 0 : red;
-        blue = blue < 0 ? 0: blue; 
-        green = green < 0 ? 0: green;
-       
-       color = new Color(red,green,blue);
+
         if(life <= 0)
         return true;
         
@@ -161,6 +165,11 @@ private class Particle
     public void render(Graphics g)
     {
         Brush.fillCircle(g, this.p, this.radius, this.color);
+    }
+    
+    public void render(Graphics g, Color userColor)
+    {
+        Brush.fillCircle(g, this.p, this.radius, userColor);
     }
    }
 
