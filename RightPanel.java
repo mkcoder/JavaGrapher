@@ -232,7 +232,10 @@ public class RightPanel extends JPanel
 	private JButton showGridColorOptions;
 	private JButton showGridBGColorOptions;
 	private JCheckBox showGrid;
+	private JCheckBox showCursorCoords;
+	private JCheckBox showNumbers;
 	private JColorChooser gridColor;
+	
 	private JTextField tickHSize;
 	private JTextField tickVSize;
 	private JTextField tickHScale;
@@ -246,6 +249,8 @@ public class RightPanel extends JPanel
 		JFrame tableFrame = new JFrame();
 		grid_options = new JPanel();
 		showGrid = new JCheckBox("show grid", true);
+		showCursorCoords = new JCheckBox("show cursor coords", true);
+		showNumbers = new JCheckBox("show numbers", true);
 		showGridColorOptions = new JButton("change grid color");
 		showGridBGColorOptions = new JButton("change grid background color");
 		tickHSize = new JTextField();
@@ -335,6 +340,24 @@ public class RightPanel extends JPanel
 			}
 		});
 		
+		showNumbers.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				drawManager.showNumbers(showNumbers.isSelected());
+			}
+		});
+		
+		showCursorCoords.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				drawManager.showCursorCoords(showCursorCoords.isSelected());
+			}
+		});
+		
 		tickHScale.addActionListener(new ActionListener() {
 			
 			@Override
@@ -375,6 +398,8 @@ public class RightPanel extends JPanel
 		grid_options.add(tickHScale);
 		grid_options.add(new JLabel("H Scale Value"));
 		grid_options.add(tickVScale);
+		grid_options.add(showCursorCoords);
+		grid_options.add(showNumbers);
 		
 		grid_options.add(showGrid);
 		grid_options.add(showGridColorOptions);
