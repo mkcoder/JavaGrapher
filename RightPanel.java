@@ -31,6 +31,7 @@ import javafx.scene.layout.Border;
 
 public class RightPanel extends JPanel
 {
+	private boolean optionWindowOpen;
 	static int indexCount = 0;
 	public class OptionEditor implements TableCellEditor {
 		private DrawManager dm; 
@@ -108,7 +109,7 @@ public class RightPanel extends JPanel
 			int index = new Integer(table.getModel()
 					.getValueAt(row, column-2).toString())-1;
 			frame  = new JFrame();
-			dialog = new JDialog(frame);		
+			dialog = new JDialog(frame, true);		
 			options_value = new JPanel();
 			expression_options = new JPanel();
 			grid_options = new JPanel();
@@ -182,7 +183,6 @@ public class RightPanel extends JPanel
 			
 			dialog.add(options_value);			
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);	
-
 			dialog.pack();
 			dialog.setVisible(true);
 			return null;
@@ -228,7 +228,7 @@ public class RightPanel extends JPanel
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				drawManager.setTickH((new Integer(tickHSize.getText())));
+				drawManager.setTickH((new Double(tickHSize.getText())));
 			}
 		});
 		
@@ -236,7 +236,7 @@ public class RightPanel extends JPanel
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				drawManager.setTickV((new Integer(tickVSize.getText())));
+				drawManager.setTickV((new Double(tickVSize.getText())));
 			}
 		});
 		
@@ -308,15 +308,18 @@ public class RightPanel extends JPanel
 
 		table.getColumn("INDEX").setCellEditor(new OptionEditor(false));
 		table.getColumn("EXPRESSION").setCellEditor(new OptionEditor(false));
-		table.getColumn("OPTION").setCellEditor(new OptionEditor(drawManager));
-
+		if ( !optionWindowOpen )
+			table.getColumn("OPTION").setCellEditor(new OptionEditor(drawManager));
+		
 		// create a table frame with the headers on top and the table on the center
 		tableHolderPanel.setLayout(new BorderLayout());
 		tableHolderPanel.add(table.getTableHeader(), BorderLayout.NORTH);
 		tableHolderPanel.add(table, BorderLayout.CENTER);
 		
 		grid_options.setLayout(new GridLayout(0, 1));
+		grid_options.add(new JLabel("H Tick Value"));
 		grid_options.add(tickHSize);
+		grid_options.add(new JLabel("V Tick Value"));
 		grid_options.add(tickVSize);
 		grid_options.add(showGrid);
 		grid_options.add(showGridColorOptions);
