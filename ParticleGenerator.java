@@ -22,6 +22,11 @@ public class ParticleGenerator
     }
  
 
+    public void setExpression(String expression)
+    {
+        this.expression = expression;
+    }
+
     public void draw(Graphics g, DrawManager d)
     {
         update();
@@ -58,7 +63,7 @@ public class ParticleGenerator
        
         for(int i = 0; i < particles.size(); i++)
         {
-            double particleGeneration;
+            double particleDensity;
             boolean remove;
             Particle p;
             Point p1;
@@ -77,10 +82,10 @@ public class ParticleGenerator
             p1.y = drawManager.globalToScreenY(-y);                               
 
             remove = p.update(p1);
-            particleGeneration = Math.random();
+            particleDensity = Math.random();
 
             
-            if(remove || (particles.size() < 500 && particleGeneration < 0.3))
+            if(remove || (particles.size() < 500 && particleDensity < 0.01))
             {
                 if(remove)
                 {
