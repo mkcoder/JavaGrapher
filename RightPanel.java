@@ -47,7 +47,7 @@ public class RightPanel extends JPanel
 		private JButton color_button;
 		private JCheckBox checkVisible;
 		private JCheckBox showParticle;
-		
+		private JButton removeFunction;
 		
 		public OptionEditor(){ isEditable = true; }
 		
@@ -116,8 +116,8 @@ public class RightPanel extends JPanel
 			function = new JTextField(25);
 			color_button = new JButton("change line color");
 			checkVisible = new JCheckBox("Visible", true);
-			showParticle = new JCheckBox("show particles", true);
-			
+			showParticle = new JCheckBox("show particles", true);		
+			removeFunction = new JButton("remove function");
 			// set up size, location and title of the dialog box
 			dialog.setLocation(100, 100);
 			dialog.setPreferredSize(new Dimension(500, 550));
@@ -178,6 +178,19 @@ public class RightPanel extends JPanel
 				}
 			});
 			
+			removeFunction.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					int index = new Integer((table.getModel()
+							.getValueAt(row, column-2)).toString())-1;
+					dm.removeFunction(index);
+					((DefaultTableModel)table.getModel()).removeRow(index);
+					indexCount--;
+					dialog.setVisible(false);
+				}
+			});
 			
 			options_value.setLayout(new GridLayout(2, 0));
 			expression_options.setLayout(new GridLayout(0, 1));
@@ -187,13 +200,12 @@ public class RightPanel extends JPanel
 			expression_options.add(function);	
 			expression_options.add(color_button);
 			expression_options.add(checkVisible);
-			
+			expression_options.add(removeFunction);
 			particle_options.add(showParticle);
 			
 			options_value.add(new JLabel("Function options: " ));
 			options_value.add(expression_options);
-
-			options_value.add(new JSeparator());
+			expression_options.add(new JSeparator());
 			
 			options_value.add(new JLabel("Particle options: " ));			
 			options_value.add(particle_options);
