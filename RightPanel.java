@@ -235,6 +235,8 @@ public class RightPanel extends JPanel
 	private JColorChooser gridColor;
 	private JTextField tickHSize;
 	private JTextField tickVSize;
+	private JTextField tickHScale;
+	private JTextField tickVScale;
 	
 	
 	public RightPanel(DrawManager _drawManager)
@@ -248,6 +250,8 @@ public class RightPanel extends JPanel
 		showGridBGColorOptions = new JButton("change grid background color");
 		tickHSize = new JTextField();
 		tickVSize = new JTextField();
+		tickHScale = new JTextField();
+		tickVScale = new JTextField();
 		gridColor = new JColorChooser();
 		
 		functionInputPanel = new JPanel();		
@@ -331,6 +335,24 @@ public class RightPanel extends JPanel
 			}
 		});
 		
+		tickHScale.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				drawManager.setScaleH(new Double(tickHScale.getText()));
+			}
+		});
+		
+		tickVScale.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				drawManager.setScaleV(new Double(tickVScale.getText()));
+			}
+		});
+		
 		functionInputPanel.add(new JLabel("Y="), BorderLayout.PAGE_START);
 		functionInputPanel.add(lineFunction, BorderLayout.NORTH);
 		functionInputPanel.add(add_function, BorderLayout.NORTH);
@@ -349,6 +371,11 @@ public class RightPanel extends JPanel
 		grid_options.add(tickHSize);
 		grid_options.add(new JLabel("V Tick Value"));
 		grid_options.add(tickVSize);
+		grid_options.add(new JLabel("V Scale Value"));
+		grid_options.add(tickHScale);
+		grid_options.add(new JLabel("H Scale Value"));
+		grid_options.add(tickVScale);
+		
 		grid_options.add(showGrid);
 		grid_options.add(showGridColorOptions);
 		grid_options.add(showGridBGColorOptions);
