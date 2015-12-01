@@ -31,10 +31,7 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		drawAxesFlag = true;
 		drawGridFlag = true;
 		drawNumFlag = true;
-		drawCursorFlag = true;
-		addMouseListener(this);
-		addMouseMotionListener(this);
-		addComponentListener(this);
+		drawCursorFlag = true;		
 		scale = new DimensionF(40, 40);
 		gridColor = Color.BLACK;
 		tick = new DimensionF(1, 1);
@@ -45,6 +42,9 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		mouseLast = new Point();
 		timer = new Timer(20, this);
 		timer.start(); 
+		addMouseListener(this);
+		addMouseMotionListener(this);
+		addComponentListener(this);
 	}
 	
 	public void initialize()
@@ -244,7 +244,6 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 	public void addFunction(Function f)
 	{
 		functions.add(f);
-		getParent().repaint();
 	}
 	
 	public void removeFunction(int index)
@@ -367,14 +366,12 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		}
 		
 		mouseLast.setLocation(e.getX(),e.getY());
-		repaint();
     }
 
 	@Override
     public void mouseMoved(MouseEvent e)
 	{
 		mouseLast.setLocation(e.getX(),e.getY());
-		repaint();
     }
 
 	@Override
@@ -415,10 +412,17 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 
 	@Override
     public void componentResized(ComponentEvent e)
-    {		
-		scale.width *= (double)getWidth()/lastSize.width;
-		scale.height *= (double)getHeight()/lastSize.height;		
-		lastSize = getSize();
+    {
+		try
+		{
+			scale.width *= (double)getWidth()/lastSize.width;
+			scale.height *= (double)getHeight()/lastSize.height;
+			lastSize = getSize();
+		}
+		catch(NullPointerException ex)
+		{
+			//dont do anything, thats weird java feature
+		}
     }
 
 	@Override

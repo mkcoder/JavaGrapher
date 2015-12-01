@@ -8,6 +8,7 @@ public class Function
 	private String expression;
 	private Color color;
 	private boolean visible;
+	private boolean showParticlesFlag;
 	private ParticleGenerator particles;
 	
 	public Function(String expr, Color color, DrawManager d)
@@ -19,6 +20,7 @@ public class Function
 		this.expression = expr;
 		particles = new ParticleGenerator(expression, compl, d);
 		visible = true;
+		showParticlesFlag = true;
 	}
 	
 	public void draw(Graphics g, DrawManager d)
@@ -59,13 +61,17 @@ public class Function
 			Brush.drawLine(g, p1, p2, color, 1);
 		}
 		
-		particles.draw(g, d, color);
+		if(showParticlesFlag)
+		{
+			particles.draw(g, d, color);
+		}
 	}
 	
 	public void setVisible(boolean flag)
 	{
 		visible = flag;
 	}
+	
 	public boolean getVisible()
 	{
 		return visible;
@@ -74,6 +80,11 @@ public class Function
 	public void setColor(Color color)
 	{
 		this.color = color;
+	}
+	
+	public void showParticles(boolean flag)
+	{
+		showParticlesFlag = flag;
 	}
 	
 	public String getExpression()
@@ -87,7 +98,8 @@ public class Function
 		this.particles.setExpression(expression);
 	}
 
-	public Color getColor() {
+	public Color getColor()
+	{
 		return color;
 	}
 }
