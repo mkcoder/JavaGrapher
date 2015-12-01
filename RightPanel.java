@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.EventObject;
 
+import javax.print.attribute.standard.JobHoldUntil;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -18,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.CellEditorListener;
@@ -39,14 +41,13 @@ public class RightPanel extends JPanel
 		private JPanel options_value;
 		
 		private JPanel expression_options;
-		
 		private JPanel particle_options;
 		
 		private JTextField function;
 		private Color userColor;
 		private JButton color_button;
-		private GridLayout layout;
 		private JCheckBox checkVisible;
+		private JCheckBox showParticle;
 		
 		
 		public OptionEditor(){ isEditable = true; }
@@ -116,8 +117,8 @@ public class RightPanel extends JPanel
 			update = new JButton("Update");
 			function = new JTextField(25);
 			color_button = new JButton("change line color");
-			layout = new GridLayout(4, 2);
-			checkVisible = new JCheckBox("Visible");
+			checkVisible = new JCheckBox("Visible", true);
+			showParticle = new JCheckBox("show particles", true);
 			
 			// set up size, location and title of the dialog box
 			dialog.setLocation(100, 100);
@@ -135,6 +136,7 @@ public class RightPanel extends JPanel
 				public void actionPerformed(ActionEvent e) {
 					int index = new Integer((table.getModel()
 							.getValueAt(row, column-2)).toString())-1;
+					dm.getFunction(index).showParticles(showParticle.isSelected());
 					String expression = function.getText(); 
 							
 							table.getModel()
@@ -158,21 +160,24 @@ public class RightPanel extends JPanel
 				}
 			});
 			
-			options_value.setLayout(new GridLayout(3, 0));
+			options_value.setLayout(new GridLayout(2, 0));
 			expression_options.setLayout(new GridLayout(0, 1));
 			particle_options.setLayout(new GridLayout(0, 1));
 			
 			expression_options.add(new JLabel("Function: "));
 			expression_options.add(function);	
 			expression_options.add(color_button);
-			expression_options.add(new JLabel("Visible: "));
 			expression_options.add(checkVisible);
+			
+			particle_options.add(showParticle);
+			particle_options.add(update);	
 			
 			options_value.add(new JLabel("Function options: " ));
 			options_value.add(expression_options);
-						
-			options_value.add(new JLabel("Particle options: " ));
-			particle_options.add(update);	
+
+			options_value.add(new JSeparator());
+			
+			options_value.add(new JLabel("Particle options: " ));			
 			options_value.add(particle_options);
 			
 			dialog.add(options_value);			
@@ -199,7 +204,9 @@ public class RightPanel extends JPanel
 	private JButton showGridBGColorOptions;
 	private JCheckBox showGrid;
 	private JColorChooser gridColor;
-	private JTextField incrementSize;
+	private JTextField tickHSize;
+	private JTextField tickVSize;
+	
 	
 	public RightPanel(DrawManager _drawManager)
 	{		
@@ -207,14 +214,31 @@ public class RightPanel extends JPanel
 		JScrollPane tablePane = new JScrollPane(table);
 		JFrame tableFrame = new JFrame();
 		grid_options = new JPanel();
-		showGrid = new JCheckBox("show grid");
+		showGrid = new JCheckBox("show grid", true);
 		showGridColorOptions = new JButton("change grid color");
 		showGridBGColorOptions = new JButton("change grid background color");
-		incrementSize = new JTextField();			
+		tickHSize = new JTextField();
+		tickVSize = new JTextField();
 		gridColor = new JColorChooser();
 		
 		functionInputPanel = new JPanel();		
 		tableHolderPanel = new JPanel();
+		
+		tickHSize.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				drawManager.setTickH((new Integer(tickHSize.getText())));
+			}
+		});
+		
+		tickVSize.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				drawManager.setTickV((new Integer(tickVSize.getText())));
+			}
+		});
 		
 		dtm = new DefaultTableModel(new Object[] {
 				"Equation number", 
@@ -243,7 +267,6 @@ public class RightPanel extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if ( lineFunction.getText().length() <= 0 ) return;
-				System.out.println(lineFunction.getText());
 				drawManager.addFunction(new Function(lineFunction.getText(), 
 						new Color(0,0,0), drawManager));
 				addRow(lineFunction.getText(), dtm);
@@ -293,6 +316,8 @@ public class RightPanel extends JPanel
 		tableHolderPanel.add(table, BorderLayout.CENTER);
 		
 		grid_options.setLayout(new GridLayout(0, 1));
+		grid_options.add(tickHSize);
+		grid_options.add(tickVSize);
 		grid_options.add(showGrid);
 		grid_options.add(showGridColorOptions);
 		grid_options.add(showGridBGColorOptions);
