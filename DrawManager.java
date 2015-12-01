@@ -100,11 +100,11 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		// x-axis
 		Brush.drawLine(g, new Point(0, screenOrigin.y), 
 				new Point(size.width, screenOrigin.y), gridColor, thickness);
-		Brush.drawString(g, "X", new Point(screenOrigin.x+4, 15), Color.BLACK, xySize, Font.BOLD);
+		Brush.drawString(g, "X", new Point(screenOrigin.x+4, 15), gridColor, xySize, Font.BOLD);
 		
 		// y-axis
 		Brush.drawLine(g, new Point(screenOrigin.x, 0), new Point(screenOrigin.x, size.height), gridColor, thickness);
-		Brush.drawString(g, "Y", new Point(size.width-15, screenOrigin.y-4), Color.BLACK, xySize, Font.BOLD);
+		Brush.drawString(g, "Y", new Point(size.width-15, screenOrigin.y-4), gridColor, xySize, Font.BOLD);
 	}
 	
 	private void drawGrid(Graphics g)
