@@ -31,7 +31,6 @@ import javafx.scene.layout.Border;
 
 public class RightPanel extends JPanel
 {
-	private boolean optionWindowOpen;
 	static int indexCount = 0;
 	public class OptionEditor implements TableCellEditor {
 		private DrawManager dm; 
@@ -308,8 +307,7 @@ public class RightPanel extends JPanel
 
 		table.getColumn("INDEX").setCellEditor(new OptionEditor(false));
 		table.getColumn("EXPRESSION").setCellEditor(new OptionEditor(false));
-		if ( !optionWindowOpen )
-			table.getColumn("OPTION").setCellEditor(new OptionEditor(drawManager));
+		table.getColumn("OPTION").setCellEditor(new OptionEditor(drawManager));
 		
 		// create a table frame with the headers on top and the table on the center
 		tableHolderPanel.setLayout(new BorderLayout());
