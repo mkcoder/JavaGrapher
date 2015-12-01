@@ -6,7 +6,6 @@ public class ParticleGenerator
 {
     private String expression;
     private ArrayList<Particle> particles;
-    private Color particleColor;
     private DrawManager drawManager;
     
    /**
@@ -15,7 +14,6 @@ public class ParticleGenerator
      */
     public ParticleGenerator(String expression, Color color, DrawManager d)
     {  
-        this.particleColor = color;
         this.expression = expression;
         this.particles = new ArrayList<Particle>();
         this.drawManager = d; 
@@ -26,20 +24,14 @@ public class ParticleGenerator
     {
         this.expression = expression;
     }
-
-    public void draw(Graphics g, DrawManager d)
-    {
-        update();
-        render(g);
-    }
     
     public void draw(Graphics g, DrawManager d, Color color)
     {
-        update();
+        update(color);
         render(g, color);
     }
 
-    private void update()
+    private void update(Color color)
     {
         if(particles.isEmpty())
         {
@@ -57,7 +49,7 @@ public class ParticleGenerator
             p.x = 0;
             p.y = drawManager.globalToScreenY(-y); 
             
-            particles.add(new Particle(p,3,randomLifeSpan,this.particleColor));
+            particles.add(new Particle(p,3,randomLifeSpan,color));
             return;
         }
        
@@ -105,7 +97,7 @@ public class ParticleGenerator
                 p2.x = 0;
                 p2.y = drawManager.globalToScreenY(-y2); 
                 
-                particles.add(new Particle(p2,3,randomLifeSpan,this.particleColor));
+                particles.add(new Particle(p2,3,randomLifeSpan,color));
                 
             }
            
