@@ -129,7 +129,7 @@ public class Expression{
 		return v3;
 	}
 	
-	void processExpression ()
+	public double processExpression ()
 	{
 		int pf=0;
 		Token inputToken;
@@ -209,6 +209,7 @@ public class Expression{
 			System.out.println("ILLEGAL EXPRESSION 2\n");
 			//solution = -999;
 		}
+		return solution;
 	}
 	
 	public String toString(){
