@@ -258,9 +258,12 @@ public class RightPanel extends JPanel
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
+				try 
+				{
 					drawManager.setTickH((new Double(tickHSize.getText())));
-				} catch (NumberFormatException e1) {
+				} 
+				catch (NumberFormatException e1) 
+				{
 					tickHSize.setText("");
 					JOptionPane.showConfirmDialog(null, "Please enter a decimal value!", 
 							"Wrong input",
@@ -273,9 +276,12 @@ public class RightPanel extends JPanel
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
+				try 
+				{
 					drawManager.setTickV((new Double(tickVSize.getText())));
-				} catch ( NumberFormatException e1 ) {
+				} 
+				catch ( NumberFormatException e1 ) 
+				{
 					tickVSize.setText("");
 					JOptionPane.showConfirmDialog(null, "Please enter a decimal value!", 
 							"Wrong input",
@@ -379,7 +385,8 @@ public class RightPanel extends JPanel
 				try 
 				{
 					drawManager.setScaleH(new Double(tickHScale.getText()));
-				} catch (NumberFormatException e1) 
+				} 
+				catch (NumberFormatException e1) 
 				{
 					tickHScale.setText("");
 					JOptionPane.showConfirmDialog(null, "Please enter a decimal value!", 
@@ -421,13 +428,13 @@ public class RightPanel extends JPanel
 		tableHolderPanel.add(table, BorderLayout.CENTER);
 		
 		grid_options.setLayout(new GridLayout(0, 1));
-		grid_options.add(new JLabel("H Tick Value"));
+		grid_options.add(new JLabel("X Tick Value (0.00001, 10000000.0)"));
 		grid_options.add(tickHSize);
-		grid_options.add(new JLabel("V Tick Value"));
+		grid_options.add(new JLabel("Y Tick Value (0.00001, 10000000.0)"));
 		grid_options.add(tickVSize);
-		grid_options.add(new JLabel("V Scale Value"));
+		grid_options.add(new JLabel("Y Scale Value (0.00001, 10000000.0)"));
 		grid_options.add(tickHScale);
-		grid_options.add(new JLabel("H Scale Value"));
+		grid_options.add(new JLabel("X Scale Value (0.00001, 10000000.0)"));
 		grid_options.add(tickVScale);
 		grid_options.add(showCursorCoords);
 		grid_options.add(showNumbers);
