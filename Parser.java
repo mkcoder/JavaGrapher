@@ -1,7 +1,8 @@
 public class Parser
 {	
 	public static double evaluate(final String str) {
-	    class Parser2 {
+	    class Parser2
+	    {
 	        int pos = -1, c;
 
 	        void eatChar() {
@@ -15,7 +16,8 @@ public class Parser
 	        double parse() {
 	            eatChar();
 	            double v = parseExpression();
-	            if (c != -1) throw new RuntimeException("Unexpected: " + (char)c);
+	            if (c != -1)
+	            	throw new RuntimeException("Unexpected: " + (char)c);
 	            return v;
 	        }
 
@@ -72,7 +74,14 @@ public class Parser
 	                if (c == ')') eatChar();
 	            } else { // numbers
 	                StringBuilder sb = new StringBuilder();
-	                while ((c >= '0' && c <= '9') || c == '.') {
+	                while ((c >= '0' && c <= '9') || c == '.' || c == 'E')
+	                {
+	                	if(c == 'E')
+	                	{
+	                		sb.append((char)c);
+		                    eatChar();
+	                	}
+	                		
 	                    sb.append((char)c);
 	                    eatChar();
 	                }
@@ -90,4 +99,9 @@ public class Parser
 	    }
 	    return new Parser2().parse();
 	}
+	
+	/*public static void main(String[] argv)
+	{
+		System.out.println(evaluate("6E-10"));
+	}*/
 }

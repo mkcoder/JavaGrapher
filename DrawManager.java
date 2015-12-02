@@ -6,7 +6,11 @@ import javax.swing.*;
 
 public class DrawManager extends JPanel implements MouseMotionListener, MouseListener, ComponentListener, ActionListener
 {
-	public static final double SCALE_SEN = 0.01; // sensitivity of scaling
+	public static final double SCALE_SEN = 0.01;   // sensitivity of scaling
+	public static final double MIN_SCALE = 0.00001;
+	public static final double MAX_SCALE = 1000000.0;
+	public static final double MIN_TICK = 0.0001;
+	public static final double MAX_TICK = 10000000;
 	
 	private PointF origin;          //
 	private Point screenOrigin;     // location of orgin in screen coordinates
@@ -271,6 +275,16 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		return (int)(origin.y*size.height + globalY*scale.height);
 	}
 	
+	public double clamp(double val, double min, double max)
+	{
+		if(val < min)
+			return min;
+		else if(val > max)
+			return max;
+		else
+			return val;
+	}
+	
 	// GETTERS
 	
 	public Function getFunction(int index)
@@ -308,31 +322,39 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 	public void setScale(DimensionF scale)
 	{
 		this.scale = scale;
+		this.scale.height = clamp(scale.height, MIN_SCALE, MAX_SCALE);
+		this.scale.width = clamp(scale.width, MIN_SCALE, MAX_SCALE);
 	}
 	
 	public void setScaleH(double horizontal)
 	{
 		scale.width = horizontal;
+		this.scale.width = clamp(scale.width, MIN_SCALE, MAX_SCALE);
 	}
 	
 	public void setScaleV(double vertical)
 	{
 		scale.height = vertical;
+		this.scale.height = clamp(scale.height, MIN_SCALE, MAX_SCALE);
 	}
 	
 	public void setTick(DimensionF tick)
 	{
 		this.tick = tick;
+		this.tick.height = clamp(tick.height, MIN_TICK, MAX_TICK);
+		this.tick.width = clamp(tick.width, MIN_TICK, MAX_TICK);
 	}
 	
 	public void setTickH(double horizontal)
 	{
 		tick.width = horizontal;
+		this.tick.width = clamp(tick.width, MIN_TICK, MAX_TICK);
 	}
 	
 	public void setTickV(double vertical)
 	{
 		tick.height = vertical;
+		this.tick.height = clamp(tick.height, MIN_TICK, MAX_TICK);
 	}
 	
 	public void setGridColor(Color color)
@@ -344,18 +366,24 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 
     @Override
     public void mouseDragged(MouseEvent e)
-	{		
+	{
+    	DimensionF helperDim; // auxiliary dimensions
+    	
 		if(SwingUtilities.isRightMouseButton(e)) // right click scales
 		{
+			helperDim = scale;
+			
 			if(mouseLast.x - e.getX() < 0) // scale down if moved left
-			{
-				scale.width *= 1 - (-(mouseLast.x - e.getX())) * SCALE_SEN;
-				scale.height *= 1 - (-(mouseLast.x - e.getX())) * SCALE_SEN;
+			{				
+				helperDim.width *= 1 - (-(mouseLast.x - e.getX())) * SCALE_SEN;
+				helperDim.height *= 1 - (-(mouseLast.x - e.getX())) * SCALE_SEN;
+				setScale(helperDim);
 			}
 			else if(mouseLast.x - e.getX() > 0) // scale up if moved right
 			{
-				scale.width *= 1 + (mouseLast.x - e.getX()) * SCALE_SEN;
-				scale.height *= 1 + (mouseLast.x - e.getX()) * SCALE_SEN;
+				helperDim.width *= 1 + (mouseLast.x - e.getX()) * SCALE_SEN;
+				helperDim.height *= 1 + (mouseLast.x - e.getX()) * SCALE_SEN;
+				setScale(helperDim);
 			}
 			
 		}
