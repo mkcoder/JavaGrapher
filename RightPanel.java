@@ -453,7 +453,13 @@ public class RightPanel extends JPanel
 		add(grid_options);
 		setPreferredSize(new Dimension(340,1000));
 	}
-		
+	
+	@Override
+	protected void paintComponent(java.awt.Graphics g) 
+	{
+		super.paintComponent(g);
+	}
+	
 	public static void addRow(String s, DefaultTableModel dtm) 
 	{
 		dtm.addRow(new Object[] {
