@@ -258,7 +258,14 @@ public class RightPanel extends JPanel
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				drawManager.setTickH((new Double(tickHSize.getText())));
+				try {
+					drawManager.setTickH((new Double(tickHSize.getText())));
+				} catch (NumberFormatException e1) {
+					tickHSize.setText("");
+					JOptionPane.showConfirmDialog(null, "Please enter a decimal value!", 
+							"Wrong input",
+							JOptionPane.OK_CANCEL_OPTION);
+				}
 			}
 		});
 		
@@ -266,7 +273,15 @@ public class RightPanel extends JPanel
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				drawManager.setTickV((new Double(tickVSize.getText())));
+				try {
+					drawManager.setTickV((new Double(tickVSize.getText())));
+				} catch ( NumberFormatException e1 ) {
+					tickVSize.setText("");
+					JOptionPane.showConfirmDialog(null, "Please enter a decimal value!", 
+							"Wrong input",
+							JOptionPane.OK_CANCEL_OPTION);
+				}
+				
 			}
 		});
 		
@@ -297,10 +312,17 @@ public class RightPanel extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if ( lineFunction.getText().length() <= 0 ) return;
-				drawManager.addFunction(new Function(lineFunction.getText(), 
-						new Color(0,0,0), drawManager));
-				addRow(lineFunction.getText(), dtm);
-				table.updateUI();
+				
+				try {
+					drawManager.addFunction(new Function(lineFunction.getText(), 
+							new Color(0,0,0), drawManager));
+					addRow(lineFunction.getText(), dtm);
+					table.updateUI();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showConfirmDialog(null, "The input for the function is wrong! "
+							+ "Expected input is x*x or x, no white space and * for carrot symbol.");
+				}
 			}
 		});
 		
@@ -345,7 +367,6 @@ public class RightPanel extends JPanel
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				drawManager.showCursorCoords(showCursorCoords.isSelected());
 			}
 		});
@@ -355,7 +376,16 @@ public class RightPanel extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				drawManager.setScaleH(new Double(tickHScale.getText()));
+				try 
+				{
+					drawManager.setScaleH(new Double(tickHScale.getText()));
+				} catch (NumberFormatException e1) 
+				{
+					tickHScale.setText("");
+					JOptionPane.showConfirmDialog(null, "Please enter a decimal value!", 
+							"Wrong input",
+							JOptionPane.OK_CANCEL_OPTION);
+				}
 			}
 		});
 		
@@ -364,11 +394,20 @@ public class RightPanel extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				drawManager.setScaleV(new Double(tickVScale.getText()));
+				try 
+				{
+					drawManager.setScaleV(new Double(tickVScale.getText()));
+				} catch (NumberFormatException e1) 
+				{			
+					tickVScale.setText("");
+					JOptionPane.showConfirmDialog(null, "Please enter a decimal value!", 
+							"Wrong input",
+							JOptionPane.OK_CANCEL_OPTION);
+				}
 			}
 		});
 		
-		functionInputPanel.add(new JLabel("Y="), BorderLayout.PAGE_START);
+		functionInputPanel.add(new JLabel("f(x)="), BorderLayout.PAGE_START);
 		functionInputPanel.add(lineFunction, BorderLayout.NORTH);
 		functionInputPanel.add(add_function, BorderLayout.NORTH);
 
