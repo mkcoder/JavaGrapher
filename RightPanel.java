@@ -22,12 +22,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.event.CellEditorListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import javafx.scene.layout.Border;
+import jdk.nashorn.internal.ir.BlockLexicalContext;
 
 public class RightPanel extends JPanel
 {
@@ -427,6 +429,9 @@ public class RightPanel extends JPanel
 		tableHolderPanel.add(table.getTableHeader(), BorderLayout.NORTH);
 		tableHolderPanel.add(table, BorderLayout.CENTER);
 		
+		
+		
+		grid_options.add(new JSeparator(), BorderLayout.PAGE_START);
 		grid_options.setLayout(new GridLayout(0, 1));
 		grid_options.add(new JLabel("X Tick Value (0.00001, 10000000.0)"));
 		grid_options.add(tickHSize);
@@ -443,9 +448,9 @@ public class RightPanel extends JPanel
 		grid_options.add(showGridColorOptions);
 		grid_options.add(showGridBGColorOptions);
 		
-		add(grid_options);
 		add(functionInputPanel);		
 		add(tableHolderPanel);
+		add(grid_options);
 		setPreferredSize(new Dimension(340,1000));
 	}
 		
