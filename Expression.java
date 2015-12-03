@@ -270,7 +270,8 @@ public class Expression{
 					}				
 					opStack.push(inputToken);  // push the current op on the opStack 
 				}
-				if(inputToken.getOp()=='^'){ // if op is ^
+				if(inputToken.getOp()=='^')
+				{ // if op is ^
 					while((!opStack.isEmpty())&&(opStack.top()=='^'||opStack.top()=='s'
 							||opStack.top()=='c' || opStack.top()=='t' || opStack.top()=='l' 
 							|| opStack.top()=='l')){ 
@@ -278,7 +279,8 @@ public class Expression{
 					}				
 					opStack.push(inputToken); // push the current op on the opStack 
 				}
-				if(inputToken.getOp()=='s'||inputToken.getOp()=='c' ||inputToken.getOp()=='q' // if op is sin,cos,tan, log
+				if(inputToken.getOp()=='s'||inputToken.getOp()=='c' ||
+						inputToken.getOp()=='q' // if op is sin,cos,tan, log
 						||inputToken.getOp()=='t'||inputToken.getOp() =='l'){
 					while((!opStack.isEmpty())&&(opStack.top()=='s'||opStack.top()=='c' 
 							|| opStack.top()=='t'|| opStack.top()=='l' || opStack.top()=='q')){
@@ -327,10 +329,4 @@ public class Expression{
 	  Expression e = new Expression(expr);
 	  return e.processExpression();
 	}
-	
-	/*public static void main(String[] argv)
-	{
-		Expression e = new Expression("1/0");
-		System.out.println(e.processExpression());
-	}*/
 }
