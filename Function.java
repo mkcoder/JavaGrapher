@@ -2,7 +2,7 @@ import java.awt.*;
 
 public class Function
 {
-	public static final int THREAD_COUNT = 2;
+	public static final int THREAD_COUNT = 4;
 	
 	private String expression;
 	private Color color;
@@ -28,6 +28,8 @@ public class Function
 	{
 		for(int i=0;i<THREAD_COUNT;i++)
 		{
+			final int param = i;
+			
 			threads[i] = new Thread()
 			{				
 				public void run()
@@ -37,33 +39,37 @@ public class Function
 					double x;
 					double y1;
 					double y2;
+					int begin;
+					int end;
 					
-					if(!visible) // draw on not draw
+					if(!visible) // draw or not draw
 					{
 						return;
 					}
 					
 					p1 = new Point();
 					p2 = new Point();
+					begin = param*d.getSize().width/THREAD_COUNT;
+					end = (param+1)*d.getSize().width/THREAD_COUNT;
 					
-					for(int i = 0; i < d.getSize().width - 1; i++)
+					for(int j = begin; j < end; j++)
 					{			
-						x = d.screenToGlobalX(i);
-						y1 = Parser.evaluate(expression.replace("x", x + ""));
+						x = d.screenToGlobalX(j);
+						y1 = Expression.evaluate(expression.replace("x", x + ""));
 									
-						p1.x = i;
-						p1.y = d.globalToScreenY(-y1);                                /////////////////// WEIRD, WHY THIS HAS TO BE NEGATIVE !!!!
+						p1.x = j;
+						p1.y = d.globalToScreenY(-y1);
 						
-						x = d.screenToGlobalX(i + 1);
-						y2 = Parser.evaluate(expression.replace("x", x + ""));
+						x = d.screenToGlobalX(j + 1);
+						y2 = Expression.evaluate(expression.replace("x", x + ""));
 						
 						if(!Double.isFinite(y1) || !Double.isFinite(y2)) // ignore infinities
 						{
 							continue;
 						}
 						
-						p2.x = i+1;
-						p2.y = d.globalToScreenY(-y2);                                /////////////////// WEIRD, WHY THIS HAS TO BE NEGATIVE !!!!
+						p2.x = j + 1;
+						p2.y = d.globalToScreenY(-y2);
 						
 						Brush.drawLine(g, p1, p2, color, 1);
 					}

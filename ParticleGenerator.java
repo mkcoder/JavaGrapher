@@ -40,7 +40,7 @@ public class ParticleGenerator
             double y;
             
             x = drawManager.screenToGlobalX(0);
-            y = Parser.evaluate(expression.replace("x", x+""));
+            y = Expression.evaluate(expression.replace("x", x+""));
             
             int randomLifeSpan = (int)(Math.random()*(500));
 
@@ -67,7 +67,7 @@ public class ParticleGenerator
             j = p.nextPosition;
             
             x = drawManager.screenToGlobalX(j);
-            y = Parser.evaluate(expression.replace("x", x+""));
+            y = Expression.evaluate(expression.replace("x", x+""));
             
             p1 = new Point();
             p1.x = j;
@@ -89,7 +89,7 @@ public class ParticleGenerator
                 double y2;
                 
                 x1 = drawManager.screenToGlobalX(0);
-                y2 = Parser.evaluate(expression.replace("x", x1+""));
+                y2 = Expression.evaluate(expression.replace("x", x1+""));
                 
                 
                 p2 = new Point();

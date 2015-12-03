@@ -1,7 +1,23 @@
 import java.awt.*;
 
+/**
+ * Container for paint wrappers.
+ * 
+ * @assignment Final project CS342, Java Grapher
+ * @author Maciej Szpakowski
+ * @date Dec 03, 2015
+ */
 public class Brush
 {
+	/**
+	 * Paints string using g object.
+	 * 
+	 * @param g Graphics object used to paint.
+	 * @param text String to paint.
+	 * @param location where to pain.
+	 * @param color text color.
+	 * @param size font size.
+	 */
 	public static void drawString(Graphics g, String text, Point location, Color color, int size)
 	{
 		drawString(g, text, location, color, size, Font.PLAIN);

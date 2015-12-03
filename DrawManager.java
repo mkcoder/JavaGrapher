@@ -6,13 +6,13 @@ import javax.swing.*;
 
 public class DrawManager extends JPanel implements MouseMotionListener, MouseListener, ComponentListener, ActionListener
 {
-	public static final double SCALE_SEN = 0.01;   // sensitivity of scaling
-	public static final double MIN_SCALE = 0.00001;
-	public static final double MAX_SCALE = 1000000.0;
-	public static final double MIN_TICK = 0.0001;
-	public static final double MAX_TICK = 10000000;
+	public static final double SCALE_SEN = 0.01;     // sensitivity of scaling
+	public static final double MIN_SCALE = 0.00001;  // min scale
+	public static final double MAX_SCALE = 1000000.0;// max scale
+	public static final double MIN_TICK = 0.0001;    // min tick
+	public static final double MAX_TICK = 10000000;  // max tick
 	
-	private PointF origin;          //
+	private PointF origin;          // origin coordinates relative to panel
 	private Point screenOrigin;     // location of orgin in screen coordinates
 	private DimensionF scale;       // size of one unit in pixels (pixels per unit)
 	private DimensionF tick;        // grid density in global coordinates	
@@ -25,8 +25,7 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 	private Point mouseLast;        // last cursor position in screen coordinates
 	private Color gridColor;        // color of the grid and axes
 	private String debugString;     // string used for debug purposes
-	private Timer timer;
-	
+	private Timer timer;            // timer that invokes draw	
 	private ArrayList<Function> functions; // all functions
 	
 	public DrawManager()
@@ -297,6 +296,11 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 		return scale;
 	}
 	
+	public DimensionF getTick()
+	{
+		return tick;
+	}
+	
 	// SETTERS
 	
 	public void showAxes(boolean flag)
@@ -455,7 +459,7 @@ public class DrawManager extends JPanel implements MouseMotionListener, MouseLis
 
 	@Override
     public void componentShown(ComponentEvent e)
-	{   
+	{
     }
 
 	@Override
