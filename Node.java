@@ -1,3 +1,5 @@
+// Class: Node
+// Description: A node object that simulates a node in a linked list
 
 public class Node {
     
@@ -31,7 +33,4 @@ public class Node {
 	{
 		return this.next;
 	}
-	
-
-	
 }
