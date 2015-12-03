@@ -280,6 +280,8 @@ public class RightPanel extends JPanel
 		tickVSize = new JTextField();
 		tickHScale = new JTextField();
 		tickVScale = new JTextField();
+		tickHSize.setText(dm.getTick().width+"");
+		tickVSize.setText(dm.getTick().height+"");
 		gridColor = new JColorChooser();
 		functionText = new JLabel("FUNCTION");
 		graphText = new JLabel("GRAPH OPTIONS");
@@ -375,6 +377,7 @@ public class RightPanel extends JPanel
 				
 				try												// try and parse the user input	  
 				{
+					Expression.evaluate(lineFunction.getText().replace('x', '0'));
 					drawManager.addFunction(new Function(lineFunction.getText(), 
 							new Color(0,0,0), drawManager));
 					addRow(lineFunction.getText(), dtm);
@@ -382,8 +385,8 @@ public class RightPanel extends JPanel
 				} catch (Exception e1)							// the input was wrong, or something else when wrong 
 				{
 					// TODO Auto-generated catch block
-					JOptionPane.showConfirmDialog(null, "The input for the function is wrong! "
-							+ "Expected input is x*x or x, no white space and * for carrot symbol.");
+					JOptionPane.showMessageDialog(null, "The input for the function is wrong! "
+							+ "");
 				}
 			}
 		});
@@ -569,19 +572,7 @@ public class RightPanel extends JPanel
 		if(!tickVScale.isFocusOwner()) // update if not focused
 		{
 			tickVScale.setText(dim.height+"");
-		}
-		
-		dim = dm.getTick();
-		
-		if(!tickHSize.isFocusOwner()) // update if not focused
-		{
-			tickHSize.setText(dim.width+"");
-		}
-		
-		if(!tickVSize.isFocusOwner()) // update if not focused
-		{
-			tickVSize.setText(dim.height+"");
-		}
+		}		
 	}
 	
 	
