@@ -1,3 +1,5 @@
+// Class: LinkedList
+// Description: A class that simulates the actions performed on a linked list data structure 
 
 public class LinkedList {
     
@@ -19,7 +21,10 @@ public class LinkedList {
 		return false;
 	}
 	
-	public void push(Token x){
+	public void push(Token x)
+	// PRE: x is initialized and valid
+	// POST: pushes x on the head of the linked list
+	{
 		Node temp = new Node(x, this.head);
 		this.head = temp; //reassign head
 		listSize++;
@@ -36,7 +41,9 @@ public class LinkedList {
 
 	}
 	
-	public void pop(){
+	public void pop()
+	// POST: removes the head of the list
+	{
 		Node temp = this.head;
 		if (temp != null)// not empty
 			this.head = temp.getNext(); //assign new head

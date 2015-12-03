@@ -1,36 +1,9 @@
-import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.EventObject;
-
-import javax.print.attribute.standard.JobHoldUntil;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.event.CellEditorListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-
-import javafx.scene.layout.Border;
-import jdk.nashorn.internal.ir.BlockLexicalContext;
+import javax.swing.table.*;
 
 public class RightPanel extends JPanel
 {
@@ -262,6 +235,7 @@ public class RightPanel extends JPanel
 
 	}
 	
+	private DrawManager dm;                         // reference to DrawManager
 	private JPanel functionInputPanel;				// groups the function input
 	private JPanel tableHolderPanel;				// groups the table
 	
@@ -293,6 +267,7 @@ public class RightPanel extends JPanel
 	// POST: draw a RightPanel and places each component
 	{		
 		final DrawManager drawManager = _drawManager;
+		dm = drawManager;
 		JScrollPane tablePane = new JScrollPane(table);
 		JFrame tableFrame = new JFrame();
 		grid_options = new JPanel();
@@ -580,7 +555,28 @@ public class RightPanel extends JPanel
 	@Override
 	protected void paintComponent(java.awt.Graphics g) 
 	{
+		DimensionF dim; // helper dimension
+		
 		super.paintComponent(g);
+		
+		dim = dm.getScale();
+		if(!tickHScale.isFocusOwner())
+		{
+			tickHScale.setText(dim.width+"");
+		}
+		if(!tickVScale.isFocusOwner())
+		{
+			tickVScale.setText(dim.height+"");
+		}
+		dim = dm.getTick();
+		if(!tickHSize.isFocusOwner())
+		{
+			tickHSize.setText(dim.width+"");
+		}
+		if(!tickVSize.isFocusOwner())
+		{
+			tickVSize.setText(dim.height+"");
+		}
 	}
 	
 	

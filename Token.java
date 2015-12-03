@@ -1,3 +1,5 @@
+// Class: Token
+// Description: A token object while holds either a number or an operator
 
 public class Token {
 	private double num;        // number stored in the node
@@ -5,7 +7,7 @@ public class Token {
 	private boolean isOp;   // flag that check if the node is a operator
 	
 	public Token(double num, boolean isOp)
-	// PRE: num, next and isOp are initialized and numid
+	// PRE: num, next and isOp are initialized
 	// POST: creates a node object with the class members num set to num
 	// and isOp set to isOp
 	{
@@ -13,9 +15,16 @@ public class Token {
 		this.isOp = isOp;
 	}
 	
+	public void setNum(int num)
+	// PRE: op is initialized and valid
+	// POST: set op to the class member op
+	{
+		this.num = num;
+	}
+	
 	public void setOp(char op)
-	// PRE:
-	// POST:
+	// PRE: op is initialized and valid
+	// POST: set op to the class member op
 	{
 		this.op = op;
 	}
@@ -39,12 +48,6 @@ public class Token {
 	{
 		return isOp;
 	}
-	
-	public String toString()
-	// POST: returns the num/op of held in the node
-	{
-		if(isOp)
-			return getOp()+"\n";
-		return getNum()+"\n";
-	}
+
+
 }
