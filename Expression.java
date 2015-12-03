@@ -56,16 +56,22 @@ public class Expression{
 				index++;
 				retToken.setNum(1);
 				return retToken;
-			}else if(('s' == ch)){ // if sin 
+			}else if(('s' == ch)){ // if start with s 
 				if(input.charAt(index+1) == 'i'          // check for sin
 						&& input.charAt(index+2) == 'n'){
 					retToken.setOp(ch);
 					index+=3;
 					retToken.setNum(1);
 					return retToken;
+				}else if (input.charAt(index+1) == 'q'&& input.charAt(index+2) == 'r' 
+						 && input.charAt(index+3) == 't'){  // check for sqrt
+					retToken.setOp('q');
+					index+=4;
+					retToken.setNum(1);
+					return retToken;						
 				}else
 					throw new RuntimeException("ILLEGAL EXPRESSION\n");
-			}else if(('c' == ch)){	// if cos
+			}else if(('c' == ch)){	// if start with c
 				if(input.charAt(index+1) == 'o'          // check for cos
 						&& input.charAt(index+2) == 's'){
 					retToken.setOp(ch);
@@ -91,7 +97,7 @@ public class Expression{
 					retToken.setNum(1);
 					return retToken;
 				}else
-					throw new RuntimeException("ILLEGAL EXPRESSION\n");				
+					throw new RuntimeException("ILLEGAL EXPRESSION\n");								
 			}else if( ('+' == ch) || ch == '-' || ('*' == ch) || ('/' == ch) || 
 						('(' == ch) || (')' == ch) || ('^' == ch)){
 				sign=1; 
@@ -125,7 +131,8 @@ public class Expression{
 	
 	public double Eval(double a, char b)
 	// PRE: a b and c are initialized and valid
-	// POST: returns the double sin/cos/tan/log of a depending on b
+	// POST: returns the double sin/cos/tan/log/sqrt
+	//       of a depending on b
 	{
 		if( b == 's')      // sin
 			return Math.sin(a);
@@ -133,8 +140,14 @@ public class Expression{
 			return Math.cos(a);
 		else if (b == 't') // tan  
 			return Math.tan(a);
-		else			   // log
+		else if (b == 'l') // log
 			return Math.log(a);
+		else{			   // sqrt
+			if(a > 0) // positive numbers
+				return Math.sqrt(a);
+			else // negative
+				throw new RuntimeException("ILLEGAL EXPRESSION\n"); 
+		}
 	}
 	
 	public double Eval(double a, char b, double c)
@@ -178,9 +191,9 @@ public class Expression{
 		op = (char) opStack.top();
 
 		if ((op != 'l' && op != 's' && op != 'c' &&op != 't' && op != '^' && op != '*' 
-				&& op != '/' && op != '+' && op != '-')||opStack.isEmpty()){ // if not valid operator
-			throw new RuntimeException("ILLEGAL EXPRESSION\n");
-		}else{                                                               // if valid operator
+				&& op != '/' && op != '+' && op != '-' && op != 'q')||opStack.isEmpty()){ 
+			throw new RuntimeException("ILLEGAL EXPRESSION\n");            // if not valid operator
+		}else{                      // if valid operator
 			opStack.pop();
 		}
 		
@@ -202,7 +215,7 @@ public class Expression{
 			v3 = Eval(v1, op, v2);
 			Token temp = new Token(v3,false);
 			valStack.push(temp);
-		}else if (op == 's' || op == 'c' || op == 't'|| op == 'l'){   // if sin, cos, tan, log
+		}else if (op == 's' || op == 'c' || op == 't'|| op == 'l' || op == 'q'){  // if sin, cos, tan, log
 			if(valStack.isEmpty()){ // check if v1 is empty
 				throw new RuntimeException("ILLEGAL EXPRESSION\n");
 			}
@@ -243,7 +256,7 @@ public class Expression{
 				if(inputToken.getOp()=='+'||inputToken.getOp()=='-'){//if op is + or - 
 					while((!opStack.isEmpty())&&(opStack.top()=='+'||opStack.top()=='-'     
 							||opStack.top()=='*'||opStack.top()=='/'||opStack.top()=='^' 
-							||opStack.top()=='s'||opStack.top()=='c'
+							||opStack.top()=='s'||opStack.top()=='c' || opStack.top()=='q'
 							||opStack.top()=='t'|| opStack.top()=='l')){
 						solution=popAndEval();
 					}
@@ -252,22 +265,23 @@ public class Expression{
 				if(inputToken.getOp()=='*'||inputToken.getOp()=='/'){//if op is * or /
 					while((!opStack.isEmpty())&&(opStack.top()=='*'||opStack.top()=='/'
 							||opStack.top()=='^'||opStack.top()=='s'||opStack.top()=='c' 
-							|| opStack.top()=='t'|| opStack.top()=='l')){
+							|| opStack.top()=='t'|| opStack.top()=='l'|| opStack.top()=='q')){
 						solution=popAndEval();
 					}				
 					opStack.push(inputToken);  // push the current op on the opStack 
 				}
 				if(inputToken.getOp()=='^'){ // if op is ^
 					while((!opStack.isEmpty())&&(opStack.top()=='^'||opStack.top()=='s'
-							||opStack.top()=='c' || opStack.top()=='t' || opStack.top()=='l')){ 
+							||opStack.top()=='c' || opStack.top()=='t' || opStack.top()=='l' 
+							|| opStack.top()=='l')){ 
 						solution = popAndEval();
 					}				
 					opStack.push(inputToken); // push the current op on the opStack 
 				}
-				if(inputToken.getOp()=='s'||inputToken.getOp()=='c'  // if op is sin,cos,tan, log
+				if(inputToken.getOp()=='s'||inputToken.getOp()=='c' ||inputToken.getOp()=='q' // if op is sin,cos,tan, log
 						||inputToken.getOp()=='t'||inputToken.getOp() =='l'){
 					while((!opStack.isEmpty())&&(opStack.top()=='s'||opStack.top()=='c' 
-							|| opStack.top()=='t'|| opStack.top()=='l')){
+							|| opStack.top()=='t'|| opStack.top()=='l' || opStack.top()=='q')){
 						solution = popAndEval();
 					}				
 					opStack.push(inputToken); // push the current op on the opStack 

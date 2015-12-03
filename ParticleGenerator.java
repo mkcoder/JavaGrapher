@@ -53,16 +53,18 @@ public class ParticleGenerator
         {
             double particleDensity;     // Determines how many particles will be on the screen
             boolean remove;             //Has the particle reached the end of its life
-            Particle p;                 //Each particle 
-            Point p1;
+            Particle p;                
+            Point p1;                
             int nextPosition;          //The next x position
-            double x;
+            double x;                  //the x position 
             double y;
+            String convertX;
             
             p = particles.get(i);            
             nextPosition = p.nextPosition;
             
             x = drawManager.screenToGlobalX(nextPosition);     //map origin to global coordinate 
+            convertX = String.format("%f", x);
             y = Expression.evaluate(expression.replace("x", x+""));//Evaluate the expression at 
                                                                    // this new x position
             
@@ -105,9 +107,11 @@ public class ParticleGenerator
         double x;
         double y;
         int randomLifeSpan;
+        String convertX;
         
-        x = drawManager.screenToGlobalX(0);  //map origin to global coordinate          
-        y = Expression.evaluate(expression.replace("x", x+"")); //Evaluate the expression at 0
+        x = drawManager.screenToGlobalX(0);  //map origin to global coordinate  
+        convertX = String.format("%f", x);
+        y = Expression.evaluate(expression.replace("x", convertX)); //Evaluate the expression at 0
 
         
         randomLifeSpan = (int)(Math.random()*(500));           //Generate a random life span
