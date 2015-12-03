@@ -687,9 +687,16 @@ public class DrawManager extends JPanel implements MouseMotionListener,
 	@Override
     public void actionPerformed(ActionEvent e)
 	{
-		if(e.getSource() == timer) // timer
+		try
 		{
-			repaint();
+			if(e.getSource() == timer) // timer
+			{
+				getParent().repaint();
+			}
+		}
+		catch(NullPointerException ex)
+		{
+			// dont do anything, weird JAVA feature
 		}
     }
 }

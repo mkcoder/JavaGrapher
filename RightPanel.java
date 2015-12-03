@@ -560,20 +560,25 @@ public class RightPanel extends JPanel
 		super.paintComponent(g);
 		
 		dim = dm.getScale();
-		if(!tickHScale.isFocusOwner())
+		
+		if(!tickHScale.isFocusOwner()) // update if not focused
 		{
 			tickHScale.setText(dim.width+"");
 		}
-		if(!tickVScale.isFocusOwner())
+		
+		if(!tickVScale.isFocusOwner()) // update if not focused
 		{
 			tickVScale.setText(dim.height+"");
 		}
+		
 		dim = dm.getTick();
-		if(!tickHSize.isFocusOwner())
+		
+		if(!tickHSize.isFocusOwner()) // update if not focused
 		{
 			tickHSize.setText(dim.width+"");
 		}
-		if(!tickVSize.isFocusOwner())
+		
+		if(!tickVSize.isFocusOwner()) // update if not focused
 		{
 			tickVSize.setText(dim.height+"");
 		}

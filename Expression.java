@@ -1,6 +1,10 @@
+// Class: Expression
+// Description: takes a valid algebraic expression in the form of a string 
+//               then returns the values as a double
 
 public class Expression{
 	String input; 	     // input that is going to be evaluated
+	String singleTest;   // a string that tests if a single number is entered
 	int index;           // the current index of the input string\
 	int sign;            // the sign of a parsed number
 	int inputLength;     // the length of the input string
@@ -13,10 +17,11 @@ public class Expression{
 	// POST: sets the class member input to input and initialize the class members
 	//         valStack, opStack and solution
 	{
-		this.input = input.replaceAll(" ","") + "="; // removes all space and appends =
-		this.valStack = new LinkedList();
+		this.input = input.replaceAll(" ","") + "="; // removes all spaces and appends =
+		this.singleTest = input.replaceAll(" ","");  // remove all spaces
+		this.valStack = new LinkedList();            // initialize lists
 		this.opStack = new LinkedList();
-		this.index = 0;
+		this.index = 0;                              // set class members
 		this.sign = 1;
 		this.inputLength = this.input.length();
 		this.solution = 0;
@@ -25,38 +30,77 @@ public class Expression{
 	public Token getToken()
 	// POST: parses a section of the input and return a token with either an operator or number
 	{
-		Token retToken = new Token(0, true);
-		char ch;
-		String num; 
-		double val;
+		Token retToken = new Token(0, true); // initialize token
+		char ch;                             // character that holds the char at current index
+		String num;                          // string that holds a number
+		double val;                          // the double representation of num
 				
-		ch  = input.charAt(index);
-		
+		ch  = input.charAt(index);	
+			
 		if(ch == '='){ // end of equation
 			retToken.setOp('=');
 			return retToken;
 		}
 		
-		if(index == 0 && ch == '-'){ // start with a - 
+		else if(index == 0 && ch == '-'){ // start with a - 
 			sign = -1;               // must be a negative number
 			index++;
-		}else if(ch == '-' && !Character.isDigit(input.charAt(index-1))){ // previous char isn't a digit either
-			sign = -1;                                                    // it's a negative number
+			ch = input.charAt(index);
+		}else if(ch == '-' && !Character.isDigit(input.charAt(index-1))){ // previous char 
+			sign = -1;                           //isn't a digit either  it's a negative number
 			index++;	
-		}else{ 
-			if ( ('(' == ch)){ // if open parenthesis, sign doesn't change
+			ch = input.charAt(index);
+		}else{ // operator for not negatives
+			if ( ('(' == ch)){ // if open parenthesis
 				retToken.setOp(ch);
 				index++;
+				retToken.setNum(1);
 				return retToken;
+			}else if(('s' == ch)){ // if sin 
+				if(input.charAt(index+1) == 'i'          // check for sin
+						&& input.charAt(index+2) == 'n'){
+					retToken.setOp(ch);
+					index+=3;
+					retToken.setNum(1);
+					return retToken;
+				}else
+					throw new RuntimeException("ILLEGAL EXPRESSION\n");
+			}else if(('c' == ch)){	// if cos
+				if(input.charAt(index+1) == 'o'          // check for cos
+						&& input.charAt(index+2) == 's'){
+					retToken.setOp(ch);
+					index+=3;
+					retToken.setNum(1);
+					return retToken;
+				}else
+					throw new RuntimeException("ILLEGAL EXPRESSION\n");
+			}else if(('t' == ch)){	// if starts with t
+				if(input.charAt(index+1) == 'a'          // check for tan
+						&& input.charAt(index+2) == 'n'){
+					retToken.setOp(ch);
+					index+=3;
+					retToken.setNum(1);
+					return retToken;
+				}else
+					throw new RuntimeException("ILLEGAL EXPRESSION\n");
+			}else if(('l' == ch)){	// if starts with l
+				if(input.charAt(index+1) == 'o'          // check for log
+						&& input.charAt(index+2) == 'g'){
+					retToken.setOp(ch);
+					index+=3;
+					retToken.setNum(1);
+					return retToken;
+				}else
+					throw new RuntimeException("ILLEGAL EXPRESSION\n");				
 			}else if( ('+' == ch) || ch == '-' || ('*' == ch) || ('/' == ch) || 
 						('(' == ch) || (')' == ch) || ('^' == ch)){
 				sign=1; 
 				retToken.setOp(ch); // set the operator
 				index++;
+				retToken.setNum(1);
 				return retToken; 
 			}
 		}
-		ch  = input.charAt(index);
 
 		if(Character.isDigit(ch)){  // if the char is a character
 			int start = index;      // store start and end
@@ -81,14 +125,16 @@ public class Expression{
 	
 	public double Eval(double a, char b)
 	// PRE: a b and c are initialized and valid
-	// POST: returns the double a op c depending on b
+	// POST: returns the double sin/cos/tan/log of a depending on b
 	{
-		if( b == 's')       // sin
+		if( b == 's')      // sin
 			return Math.sin(a);
 		else if( b == 'c') // cos
 			return Math.cos(a);
-		else               // tan  
+		else if (b == 't') // tan  
 			return Math.tan(a);
+		else			   // log
+			return Math.log(a);
 	}
 	
 	public double Eval(double a, char b, double c)
@@ -124,118 +170,149 @@ public class Expression{
 	public double popAndEval()
 	// POST: evaluate two numbers v1 and v2 from the stack and stores it in v3
 	{
-		double v1,v2,v3;
-		char op;
+		char op;     // the operator 
+		double v1=0; // first number 
+		double v2=0; // the second number
+		double v3=0; // the solution
 		
 		op = (char) opStack.top();
 
-		if ((op != '^' && op != '*' && op != '/' && op != '+' && op != '-')||opStack.isEmpty()){
+		if ((op != 'l' && op != 's' && op != 'c' &&op != 't' && op != '^' && op != '*' 
+				&& op != '/' && op != '+' && op != '-')||opStack.isEmpty()){ // if not valid operator
 			throw new RuntimeException("ILLEGAL EXPRESSION\n");
-		}else{
+		}else{                                                               // if valid operator
 			opStack.pop();
 		}
 		
-		if(valStack.isEmpty()){//check if v2 is empty
-			throw new RuntimeException("ILLEGAL EXPRESSION\n");
-		}
+		if (op == '^' || op == '*' || op == '/' || op == '+' || op == '-'){ // if ^, *, /, +, -
+			if(valStack.isEmpty()){ // check if v2 is empty
+				throw new RuntimeException("ILLEGAL EXPRESSION\n");
+			}
 		
-		v2 = valStack.top();
-		valStack.pop();
+			v2 = valStack.top();
+			valStack.pop();
 		
-		if(valStack.isEmpty()){//check if v1 is empty
-			throw new RuntimeException("ILLEGAL EXPRESSION\n");
-		}
+			if(valStack.isEmpty()){ // check if v1 is empty
+				throw new RuntimeException("ILLEGAL EXPRESSION\n");
+			}
 
-		v1 = valStack.top();
-		valStack.pop();
+			v1 = valStack.top();
+			valStack.pop();
 
-		v3 = Eval(v1, op, v2);
-		Token temp = new Token(v3,false);
-		valStack.push(temp);
-		
+			v3 = Eval(v1, op, v2);
+			Token temp = new Token(v3,false);
+			valStack.push(temp);
+		}else if (op == 's' || op == 'c' || op == 't'|| op == 'l'){   // if sin, cos, tan, log
+			if(valStack.isEmpty()){ // check if v1 is empty
+				throw new RuntimeException("ILLEGAL EXPRESSION\n");
+			}
+			v1 = valStack.top();
+			valStack.pop();
+			
+			v3 = Eval(v1, op);
+			Token temp = new Token(v3,false);
+			valStack.push(temp);
+		}	
 		return v3;
 	}
 
 	public double processExpression() 
 	// POST: processes the parsed input and return the solution
 	{
-		Token inputToken = getToken();	
-		
-			/* Loop until the expression reaches its End */
-			while(inputToken.getOp() != '='){
-			    /* The expression contain a VALUE */
-				if (!inputToken.isOp()){		 		
-					valStack.push(inputToken); // push the value onto the valStack
-				}
-				/* The expression contains an OPERATOR */
-				if(inputToken.isOp()){
-
-					if(inputToken.getOp() =='('){//If the current operator is a Open Parenthesis
-						opStack.push(inputToken); //push ( on the OperatorStack
-					}
-					if(inputToken.getOp()=='+'||inputToken.getOp()=='-'){//if operator is + or - 
-						while((!opStack.isEmpty())&&(opStack.top()=='+'||opStack.top()=='-'||opStack.top()=='*'||opStack.top()=='/'||opStack.top()=='^')){//the top of the OperatorStack is +, -, *, or /
-							solution=popAndEval();
-						}
-						opStack.push(inputToken);  //push the current operator on the OperatorStack
-					}
-					if(inputToken.getOp()=='*'||inputToken.getOp()=='/'){//if operator is * or /
-						while((!opStack.isEmpty())&&(opStack.top()=='*'||opStack.top()=='/'||opStack.top()=='^')){//the top of the OperatorStack is +, -, * or /
-							solution=popAndEval();
-						}				
-						opStack.push(inputToken);  //push the current operator on the OperatorStack
-					}
-					if(inputToken.getOp()=='^'){//if operator is * or /
-						while((!opStack.isEmpty())&&(opStack.top()=='^')){//the top of the OperatorStack is +, -, * or /
-							solution = popAndEval();
-						}				
-						opStack.push(inputToken); //push the current operator on the OperatorStack
-					}
-					if(inputToken.getOp()==')'){//the current operator is a Closing Parenthesis
-						while((!opStack.isEmpty())&&(opStack.top()!='(')){//the top of the OperatorStack is not an Open Parenthesis
-							solution=popAndEval();
-						}
-					
-						if(opStack.isEmpty()){//the OperatorStack is Empty
-							throw new RuntimeException("ILLEGAL EXPRESSION\n");
-						}else{
-							opStack.pop(); //pop the Open Parenthesis from the OperatorStack
-						}
-					}
-				}
-				/* get next token from input */
-				inputToken = getToken();
-			} 
-
-			/* The expression has reached its end */
-			while(!opStack.isEmpty()){
-				solution = popAndEval();
-			}
-			
-			valStack.pop(); // popping the ValueStack
-			if(!valStack.isEmpty()){
-				throw new RuntimeException("ILLEGAL EXPRESSION\n"); //print error if not empty
-			}else{
-				return solution; // return the solution
-			}	
+		if(isNumeric(singleTest)){ // if a single number is entered
+			solution = Double.parseDouble(singleTest);
+			return solution;
 		}
+		Token inputToken = getToken();	
+		if(inputToken.getNum() == 0 && inputToken.isOp()){
+			throw new RuntimeException("ILLEGAL EXPRESSION\n");	
+		}
+		
+		while(inputToken.getOp() != '='){ // loop til end of string
+			if(inputToken.getNum() == 0 && inputToken.isOp()){
+				throw new RuntimeException("ILLEGAL EXPRESSION\n");	
+			}
+			if (!inputToken.isOp()){ // is a value	 		
+				valStack.push(inputToken); // push the value onto the valStack
+			}
+
+			if(inputToken.isOp()){ // is a op
+				if(inputToken.getOp() =='('){//If the current operator is a Open Parenthesis
+					opStack.push(inputToken); //push ( on the OperatorStack
+				}
+				if(inputToken.getOp()=='+'||inputToken.getOp()=='-'){//if op is + or - 
+					while((!opStack.isEmpty())&&(opStack.top()=='+'||opStack.top()=='-'     
+							||opStack.top()=='*'||opStack.top()=='/'||opStack.top()=='^' 
+							||opStack.top()=='s'||opStack.top()=='c'
+							||opStack.top()=='t'|| opStack.top()=='l')){
+						solution=popAndEval();
+					}
+					opStack.push(inputToken); //push the current op on the opStack 
+				}
+				if(inputToken.getOp()=='*'||inputToken.getOp()=='/'){//if op is * or /
+					while((!opStack.isEmpty())&&(opStack.top()=='*'||opStack.top()=='/'
+							||opStack.top()=='^'||opStack.top()=='s'||opStack.top()=='c' 
+							|| opStack.top()=='t'|| opStack.top()=='l')){
+						solution=popAndEval();
+					}				
+					opStack.push(inputToken);  // push the current op on the opStack 
+				}
+				if(inputToken.getOp()=='^'){ // if op is ^
+					while((!opStack.isEmpty())&&(opStack.top()=='^'||opStack.top()=='s'
+							||opStack.top()=='c' || opStack.top()=='t' || opStack.top()=='l')){ 
+						solution = popAndEval();
+					}				
+					opStack.push(inputToken); // push the current op on the opStack 
+				}
+				if(inputToken.getOp()=='s'||inputToken.getOp()=='c'  // if op is sin,cos,tan, log
+						||inputToken.getOp()=='t'||inputToken.getOp() =='l'){
+					while((!opStack.isEmpty())&&(opStack.top()=='s'||opStack.top()=='c' 
+							|| opStack.top()=='t'|| opStack.top()=='l')){
+						solution = popAndEval();
+					}				
+					opStack.push(inputToken); // push the current op on the opStack 
+				}
+				if(inputToken.getOp()==')'){ // the current operator is a closing parenthesis
+					while((!opStack.isEmpty())&&(opStack.top()!='(')){ // the top of the opStack 
+						solution=popAndEval();                         // is not an open parenthesis 
+					}
+					
+					if(opStack.isEmpty()){//the OperatorStack is Empty
+						throw new RuntimeException("ILLEGAL EXPRESSION\n");
+					}else{
+						opStack.pop(); //pop the Open Parenthesis from the OperatorStack
+					}
+				}
+			}
+			inputToken = getToken(); // get the next token
+		} 
+
+		while(!opStack.isEmpty()){ // expression is done
+			solution = popAndEval();
+		}
+			
+		valStack.pop(); // popping the ValueStack
+		if(!valStack.isEmpty()){
+			throw new RuntimeException("ILLEGAL EXPRESSION\n"); //print error if not empty
+		}else{
+			return solution; // return the solution
+		}	
+	}
+	
+	public static boolean isNumeric(String str)
+	//PRE: str is initialized and valid
+	//POST: returns true if the str is a string reprensation of a number and false otherwise
+	{
+	  return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+	}	
 	
 	public static double evaluate(String expr)
-	//PRE:
-	//POST:
+	//PRE: expr is initialized and valid
+	//POST: returns the solution to expre
 	{
 	  Expression e = new Expression(expr);
 	  return e.processExpression();
 	}
 	
 
-	public String toString(){
-		return "\n" + input  + solution +"\nThe length was: " + inputLength;
-	}
-	
-	public static void main(String[] argv)
-	{
-		Expression e = new Expression("0.0-0.0^3/6+0.0^5/120");
-		System.out.println(e.processExpression());
-	}
 }
