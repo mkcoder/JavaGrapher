@@ -33,74 +33,109 @@ import jdk.nashorn.internal.ir.BlockLexicalContext;
 
 public class RightPanel extends JPanel
 {
-	static int indexCount = 0;
+	static int indexCount = 0; // keep count of the indexes in the table 
+	
 	public class OptionEditor implements TableCellEditor {
-		private DrawManager dm; 
-		private boolean isEditable; 
-		private JFrame frame;
-		private JDialog dialog; 
-		private JPanel options_value;
+		private DrawManager dm; 		// an instance of draw manager 
+		private boolean isEditable; 	// is the field editable
+		private JFrame frame;			// the window frame for the dialog
+		private JDialog dialog; 		// box that lets user update expression/functions properties
+		private JPanel options_value;	// different options on the dialog box		
+		private JPanel expression_options;	// function properties group
+		private JPanel particle_options;	// particle properties group
 		
-		private JPanel expression_options;
-		private JPanel particle_options;
+		private JTextField function;		// current function value
+		private Color userColor;			// what is users color
+		private JButton color_button;		// change the color of the line 
+		private JCheckBox checkVisible;		// is the function visibile on the graph
+		private JCheckBox showParticle;		// show the particles along the function
+		private JButton removeFunction;		// remove the function from the graph
 		
-		private JTextField function;
-		private Color userColor;
-		private JButton color_button;
-		private JCheckBox checkVisible;
-		private JCheckBox showParticle;
-		private JButton removeFunction;
+		public OptionEditor()
+		// POST: create a OptionEditor cell in the table that is editable
+		{ 
+			isEditable = true; 
+		}
 		
-		public OptionEditor(){ isEditable = true; }
-		
-		public OptionEditor(DrawManager dm)  
+		public OptionEditor(DrawManager dm) 
+		// PRE: dm is an instance of a DrawManager
+		// POST: create an instance of a OptionEditor cell that is editable 
+		// and set dm to dm
 		{			
 			this();
 			this.dm = dm;
 		}
-		public OptionEditor(boolean isEditable)  
+		public OptionEditor(boolean isEditable)
+		// PRE: isEditable is not null 
+		// POST: creates an instanceof OptionEditor cell in the table that is editable 
+		// and dm set to NULL
 		{
 			this.isEditable = isEditable;
 		}
 		@Override
-		public void addCellEditorListener(CellEditorListener l) {
+		public void addCellEditorListener(CellEditorListener l)
+		// PRE: l is set to an instance of CellEditorListener
+		// POST: 
+		{
 		}
 		
 		@Override
-		public void cancelCellEditing() {
+		public void cancelCellEditing() 
+		// POST: cell editing is canceled
+		{
 		}
 
 		@Override
-		public Object getCellEditorValue() {
+		public Object getCellEditorValue()
+		// POST: fctval == return a null pointer
+		// DOESN'T DO ANYTHING.		
+		{
 			return null;
 		}
 
 		@Override
-		public boolean isCellEditable(EventObject anEvent) {
+		public boolean isCellEditable(EventObject anEvent) 
+		// PRE: anEvent is an instance of EventObject
+		// POST: fctval == return true if the table cell is editable,
+		// false if it is not
+		{
 			// TODO Auto-generated method stub
 			return isEditable;
 		}
 
 		@Override
-		public void removeCellEditorListener(CellEditorListener l) {
-
+		public void removeCellEditorListener(CellEditorListener l)
+		// PRE: l is an instance of CellEditorListener
+		// POST: DOESN'T DO ANYTHING
+		{
 		}
 
 		@Override
-		public boolean shouldSelectCell(EventObject anEvent) {
+		public boolean shouldSelectCell(EventObject anEvent) 
+		// PRE: anEvent is an instance of EventObject
+		// POST: fctval == always true becuause all field should be selectable
+		{
 			return true;
 		}
 
 		@Override
-		public boolean stopCellEditing() {
+		public boolean stopCellEditing()
+		// POST: fctval == always true because you should be able to stop editing a cell
+		{
 			return true;
 		}
 
 		@Override
-		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
-				int column) {
+		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column)
+		// PRE: table is an instance of JTable, and has the following column headers: ["INDEX",  "EXPRESSION", "OPTION" ]
+		// 	value is an instance of the value current editing, isSelected is true, 
+		// 	row is the current row being edited, column is the current column being edit
+		// fctval == return 
+		{
 
-			int index = new Integer(table.getModel()
+			int index;		// the index of the current row being edited
+			
+			index = new Integer(table.getModel()
 					.getValueAt(row, column-2).toString())-1;
 			frame  = new JFrame();
 			dialog = new JDialog(frame, true);		
@@ -125,60 +160,73 @@ public class RightPanel extends JPanel
 //			incrementSize.setText(dm.);
 			
 			// event handlers
-			color_button.addActionListener(new ActionListener() {				
+			color_button.addActionListener(new ActionListener()
+			// POST: adds a event handler to color button to response on click
+			{				
 				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					int index = new Integer((table.getModel()
-							.getValueAt(row, column-2)).toString())-1;
+				public void actionPerformed(ActionEvent arg0) 
+				// PRE: arg0 is of instance of ActionEvent
+				// POST: change's the line color
+				{
+					
 					dm.getFunction(index)
 					.setColor(JColorChooser
 							.showDialog(dialog, "Choose a color", userColor));					
 				}
 			});
 			
-			showParticle.addActionListener(new ActionListener() {
-				
+			showParticle.addActionListener(new ActionListener()
+			// POST: adds an event handler to showParticle 
+			{
 				@Override
-				public void actionPerformed(ActionEvent e) {
-					int index = new Integer((table.getModel()
-							.getValueAt(row, column-2)).toString())-1;
+				public void actionPerformed(ActionEvent e) 
+				// PRE: e is an instance of ActionEvent
+				// POST: shows/hide the particle along the line function 
+				{
 					dm.getFunction(index).showParticles(showParticle.isSelected());
 				}
 			});
-			checkVisible.addActionListener(new ActionListener() {
-				
+			
+			checkVisible.addActionListener(new ActionListener()
+			// POST: adds a event handler to checkVisibile
+			{
 				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-
-					int index = new Integer((table.getModel()
-							.getValueAt(row, column-2)).toString())-1;
+				public void actionPerformed(ActionEvent e)
+				// PRE: e is an instance of ActionEvent
+				// POST: hides the function from the graph
+				{
 					Function f = dm.getFunction(index);
 					boolean visible = checkVisible.isSelected();
 					f.setVisible(visible);
 				}
 			});
-			function.addActionListener(new ActionListener() {
-				
+			
+			function.addActionListener(new ActionListener()
+			// POST: add an event handler to function
+			{
 				@Override
-				public void actionPerformed(ActionEvent e) {
+				public void actionPerformed(ActionEvent e)
+				// PRE: e is an instance of ActionEvent
+				// POST: updates the function express
+				{
 					String expression = function.getText(); 							
 							table.getModel()
 							.setValueAt(expression, row, column-1);
-					int index = new Integer((table.getModel()
-							.getValueAt(row, column-2)).toString())-1;
 					Function f = dm.getFunction(index);
 					f.setExpression(expression);
 				}
 			});
 			
-			removeFunction.addActionListener(new ActionListener() {
+			removeFunction.addActionListener(new ActionListener() 
+			// POST: adds a event handler to removeFunction
+			{
 				
 				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					int index = new Integer((table.getModel()
-							.getValueAt(row, column-2)).toString())-1;
+				public void actionPerformed(ActionEvent e) 
+				// PRE: e is an instance of ActionEvent
+				// POST: removes the function from the graph, 
+				// and deletes is from the table, and removes, and deletes it from the functions
+				{
 					dm.removeFunction(index);
 					((DefaultTableModel)table.getModel()).removeRow(index);
 					indexCount--;
@@ -213,30 +261,32 @@ public class RightPanel extends JPanel
 
 	}
 	
-	private JPanel functionInputPanel;
-	private JPanel tableHolderPanel;
+	private JPanel functionInputPanel;				// groups the function input
+	private JPanel tableHolderPanel;				// groups the table
 	
-	private DefaultTableModel dtm;
-	private JButton add_function;
-	protected JTextField lineFunction;
-	protected JTable table;
+	private DefaultTableModel dtm;					// a table model thats hold the data
+	private JButton add_function;					// button that adds the function to the table and functions
+	protected JTextField lineFunction;				// takes in the user function
+	protected JTable table;							// the table to display the functions
 	
 	// grid optins
-	private JPanel grid_options;
-	private JButton showGridColorOptions;
-	private JButton showGridBGColorOptions;
-	private JCheckBox showGrid;
-	private JCheckBox showCursorCoords;
-	private JCheckBox showNumbers;
-	private JColorChooser gridColor;
+	private JPanel grid_options;					// groups grid options into one panel
+	private JButton showGridColorOptions;			// button to the change the grid color
+	private JButton showGridBGColorOptions;			// button to change background grid color
+	private JCheckBox showGrid;						// show/hide the grid
+	private JCheckBox showCursorCoords;				// show/hide the cursor info box
+	private JCheckBox showNumbers;					// show/hide the numbers on the grid axis
+	private JColorChooser gridColor;				// allows the user to chagne the grid color
 	
-	private JTextField tickHSize;
-	private JTextField tickVSize;
-	private JTextField tickHScale;
-	private JTextField tickVScale;
+	private JTextField tickHSize;					// change the ticks along the x axis, scales up
+	private JTextField tickVSize;					// change the ticks along the y axis, scale wider
+	private JTextField tickHScale;					// change the X scale, zoom in				
+	private JTextField tickVScale;					// change the y scale, zooms in 
 	
 	
 	public RightPanel(DrawManager _drawManager)
+	// PRE: _drawmanager is of instance of DrawManager
+	// POST: draw a RightPanel and places each component
 	{		
 		final DrawManager drawManager = _drawManager;
 		JScrollPane tablePane = new JScrollPane(table);
@@ -255,44 +305,7 @@ public class RightPanel extends JPanel
 		
 		functionInputPanel = new JPanel();		
 		tableHolderPanel = new JPanel();
-		
-		tickHSize.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try 
-				{
-					drawManager.setTickH((new Double(tickHSize.getText())));
-				} 
-				catch (NumberFormatException e1) 
-				{
-					tickHSize.setText("");
-					JOptionPane.showConfirmDialog(null, "Please enter a decimal value!", 
-							"Wrong input",
-							JOptionPane.OK_CANCEL_OPTION);
-				}
-			}
-		});
-		
-		tickVSize.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try 
-				{
-					drawManager.setTickV((new Double(tickVSize.getText())));
-				} 
-				catch ( NumberFormatException e1 ) 
-				{
-					tickVSize.setText("");
-					JOptionPane.showConfirmDialog(null, "Please enter a decimal value!", 
-							"Wrong input",
-							JOptionPane.OK_CANCEL_OPTION);
-				}
-				
-			}
-		});
-		
+
 		dtm = new DefaultTableModel(new Object[] {
 				"Equation number", 
 				"Equation",
@@ -313,20 +326,78 @@ public class RightPanel extends JPanel
 				"EXPRESSION",
 				"OPTION"
 			});
+
 		
 		// add event handlers here
 		
-		add_function.addActionListener(new ActionListener() {
+		
+		tickHSize.addActionListener(new ActionListener() 
+		// POST: adds an eventhandler to the tickHSize
+		{
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				if ( lineFunction.getText().length() <= 0 ) return;
+			public void actionPerformed(ActionEvent e)
+			// PRE: e is an instance of ActionEvent
+			// POST: sets the tickHValue
+			{
+				try 							// try to parse to user input 
+				{
+					drawManager.setTickH((new Double(tickHSize.getText())));
+				} 
+				catch (NumberFormatException e1) // the user input was not in the correct format
+				{
+					tickHSize.setText("");
+					JOptionPane.showConfirmDialog(null, "Please enter a decimal value!", 
+							"Wrong input",
+							JOptionPane.OK_CANCEL_OPTION);
+				}
+			}
+		});
+		
+		tickVSize.addActionListener(new ActionListener() 
+		// POST: add an addActionListener handler to tickVSize   			
+		{
+			
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			// PRE: e is an instance of ActionEvent
+			// POST: changes the setTickV to user input
+			{
+				try 								// try and parse the user input
+				{
+					drawManager.setTickV((new Double(tickVSize.getText())));
+				} 
+				catch ( NumberFormatException e1 ) // user input was in the wrong format
+				{
+					tickVSize.setText("");
+					JOptionPane.showConfirmDialog(null, "Please enter a decimal value!", 
+							"Wrong input",
+							JOptionPane.OK_CANCEL_OPTION);
+				}
 				
-				try {
+			}
+		});
+		
+		add_function.addActionListener(new ActionListener()
+		// POST: add ActionListener to the add_function
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			// PRE: e is an instanve of ActionEvent
+			// POST: adds the function to the table, updates the functions, updates the graph
+			{
+				if ( lineFunction.getText().length() <= 0 )		// did the user input something greater than 0 
+				{
+					return;
+				}
+				
+				try												// try and parse the user input	  
+				{
 					drawManager.addFunction(new Function(lineFunction.getText(), 
 							new Color(0,0,0), drawManager));
 					addRow(lineFunction.getText(), dtm);
 					table.updateUI();
-				} catch (Exception e1) {
+				} catch (Exception e1)							// the input was wrong, or something else when wrong 
+				{
 					// TODO Auto-generated catch block
 					JOptionPane.showConfirmDialog(null, "The input for the function is wrong! "
 							+ "Expected input is x*x or x, no white space and * for carrot symbol.");
@@ -334,61 +405,86 @@ public class RightPanel extends JPanel
 			}
 		});
 		
-		showGrid.addActionListener(new ActionListener() {
-			
+		showGrid.addActionListener(new ActionListener() 
+		// POST: add ActionListener to the add_function
+		{
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent arg0) 
+			// PRE: arg0 is an instance of ActionEvent
+			// POST:
+			{
 				drawManager.showGrid(showGrid.isSelected());
 			}
 		});
 		
-		showGridColorOptions.addActionListener(new ActionListener() {
-			
+		showGridColorOptions.addActionListener(new ActionListener() 
+		// POST: add ActionListener to the add_function
+		{
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent arg0) 
+			// PRE: arg0 is an instance of ActionEvent
+			// POST:
+			{
 				// TODO Auto-generated method stub
 				drawManager.setGridColor(JColorChooser
 						.showDialog(grid_options, "Choose a color", new Color(0, 0, 0)));	
 			}
 		});
 		
-		showGridBGColorOptions.addActionListener(new ActionListener() {
-			
+		showGridBGColorOptions.addActionListener(new ActionListener()
+		// POST: add ActionListener to the add_function
+		{
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) 
+			// PRE: e is an instance of ActionEvent
+			// POST: changes the background color of the grid
+			{
 				// TODO Auto-generated method stub
 				drawManager.setBackground(JColorChooser
 						.showDialog(grid_options, "Choose a color", drawManager.getBackground()));
 			}
 		});
 		
-		showNumbers.addActionListener(new ActionListener() {
+		showNumbers.addActionListener(new ActionListener() 
+		// POST: add ActionListener to the add_function
+		{
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) 
+			// PRE: e is an instance of ActionEvent
+			// POST: shows/hide the number on the axis
+			{
 				// TODO Auto-generated method stub
 				drawManager.showNumbers(showNumbers.isSelected());
 			}
 		});
 		
-		showCursorCoords.addActionListener(new ActionListener() {
-			
+		showCursorCoords.addActionListener(new ActionListener()
+		// POST: add ActionListener to the add_function
+		{
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) 
+			// PRE: e is an instance of ActionEvent
+			// POST: shows/hides the cursorCoords
+			{
 				drawManager.showCursorCoords(showCursorCoords.isSelected());
 			}
 		});
 		
-		tickHScale.addActionListener(new ActionListener() {
+		tickHScale.addActionListener(new ActionListener()
+		// POST: add ActionListener to the add_function
+		{
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				try 
+			public void actionPerformed(ActionEvent e) 
+			// PRE: e is an instance of ActionEvent
+			// POST: zooms in horizontally into the graph/function
+			{
+				try 							// try and parse the user input	  
 				{
 					drawManager.setScaleH(new Double(tickHScale.getText()));
 				} 
-				catch (NumberFormatException e1) 
+				catch (NumberFormatException e1) // user input was not in the correct format
 				{
 					tickHScale.setText("");
 					JOptionPane.showConfirmDialog(null, "Please enter a decimal value!", 
@@ -398,15 +494,19 @@ public class RightPanel extends JPanel
 			}
 		});
 		
-		tickVScale.addActionListener(new ActionListener() {
+		tickVScale.addActionListener(new ActionListener()
+		// POST: add ActionListener to the add_function
+		{
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				try 
+			public void actionPerformed(ActionEvent e) 
+			// PRE: e is an instance of ActionEvent
+			// POST: zooms into to the function veritcally
+			{
+				try 							// try and parse the user input	  
 				{
 					drawManager.setScaleV(new Double(tickVScale.getText()));
-				} catch (NumberFormatException e1) 
+				} catch (NumberFormatException e1) 	// user input was not in the correct format
 				{			
 					tickVScale.setText("");
 					JOptionPane.showConfirmDialog(null, "Please enter a decimal value!", 
@@ -453,14 +553,10 @@ public class RightPanel extends JPanel
 		add(grid_options);
 		setPreferredSize(new Dimension(340,1000));
 	}
-	
-	@Override
-	protected void paintComponent(java.awt.Graphics g) 
-	{
-		super.paintComponent(g);
-	}
-	
+
 	public static void addRow(String s, DefaultTableModel dtm) 
+	// PRE: s is an instance of String, dtm is set to DefaultTableModel
+	// POST: a helper function that adds a row to the dtm
 	{
 		dtm.addRow(new Object[] {
 				++indexCount,
@@ -468,5 +564,12 @@ public class RightPanel extends JPanel
 				"Edit"
 		});
 	}
+	
+	@Override
+	protected void paintComponent(java.awt.Graphics g) 
+	{
+		super.paintComponent(g);
+	}
+	
 	
 }
