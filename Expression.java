@@ -143,10 +143,7 @@ public class Expression{
 		else if (b == 'l') // log
 			return Math.log(a);
 		else{			   // sqrt
-			if(a > 0) // positive numbers
-				return Math.sqrt(a);
-			else // negative
-				throw new RuntimeException("ILLEGAL EXPRESSION\n"); 
+			return Math.sqrt(a);
 		}
 	}
 	

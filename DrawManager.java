@@ -79,7 +79,7 @@ public class DrawManager extends JPanel implements MouseMotionListener,
 	
 	/**
 	 * Post constructor. It has to be called below the constructor.
-	 * lastsize has to be updated before anyhing happens but after panel has been constructed. 
+	 * lastsize has to be updated before anyhing happens but after panel has been constructed.
 	 */
 	public void initialize()
 	{

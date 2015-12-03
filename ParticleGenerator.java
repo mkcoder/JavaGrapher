@@ -190,6 +190,7 @@ private class Particle
     {
         if(!(this.isFinite))
         {
+        	life++;
             return;
         }
         Brush.fillCircle(g, this.p, this.radius, userColor);
