@@ -56,19 +56,19 @@ public class ParticleGenerator
             Particle p;                
             Point p1;                
             int nextPosition;          //The next x position
-            double x;                  //the x position 
-            double y;
-            String convertX;
+            double x;                  //The x position 
+            double y;                  //The y position
+            String convertX;           //The evaluated x will need to be coverted
             
             p = particles.get(i);            
             nextPosition = p.nextPosition;
             
             x = drawManager.screenToGlobalX(nextPosition);     //map origin to global coordinate 
             convertX = String.format("%f", x);
-            y = Expression.evaluate(expression.replace("x", x+""));//Evaluate the expression at 
+            y = Expression.evaluate(expression.replace("x", convertX));//Evaluate the expression at 
                                                                    // this new x position
             
-            if(!Double.isFinite(y))
+            if(!Double.isFinite(y))//
             {
                 p.setFinite(false);
             }
