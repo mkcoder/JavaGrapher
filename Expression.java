@@ -328,5 +328,9 @@ public class Expression{
 	  return e.processExpression();
 	}
 	
-
+	/*public static void main(String[] argv)
+	{
+		Expression e = new Expression("1/0");
+		System.out.println(e.processExpression());
+	}*/
 }
