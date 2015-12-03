@@ -58,7 +58,7 @@ public class ParticleGenerator
             int nextPosition;          //The next x position
             double x;                  //The x position 
             double y;                  //The y position
-            String convertX;           //The evaluated x will need to be coverted
+            String convertX;           //The evaluated x will need to be converted
             
             p = particles.get(i);            
             nextPosition = p.nextPosition;
@@ -66,10 +66,10 @@ public class ParticleGenerator
             x = drawManager.screenToGlobalX(nextPosition);     //map origin to global coordinate 
             convertX = String.format("%f", x);
             y = Expression.evaluate(expression.replace("x", convertX));//Evaluate the expression at 
-                                                                   // this new x position
+                                                                       // this new x position
             
-            if(!Double.isFinite(y))//
-            {
+            if(!Double.isFinite(y))//If the double in not finite
+            {                      //set the particle's finite field to false
                 p.setFinite(false);
             }
             else
@@ -103,11 +103,12 @@ public class ParticleGenerator
     private void addParticle(Color color)
     //POST: FCTVAL = a particle is added to the fuction and to the list
     {
-        Point p;
-        double x;
-        double y;
-        int randomLifeSpan;
-        String convertX;
+        Point p;              //The point of the particle
+        double x;             //The x position
+        double y;             //The y position
+        int randomLifeSpan;   //The life span of the particle
+        String convertX;      //The evaluated x will need to be converted
+
         
         x = drawManager.screenToGlobalX(0);  //map origin to global coordinate  
         convertX = String.format("%f", x);
@@ -129,7 +130,7 @@ public class ParticleGenerator
     //POST: FCTVAL = every particle in the list is rendered on the GUI
     //      at their point.     
     {
-        for(Particle p : particles)
+        for(Particle p : particles)//Every particles in our list
         {
             p.render(g,color);
         }
