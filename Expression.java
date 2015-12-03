@@ -43,12 +43,12 @@ public class Expression{
 		}else if(ch == '-' && !Character.isDigit(input.charAt(index-1))){ // previous char isn't a digit either
 			sign = -1;                                                    // it's a negative number
 			index++;	
-		}else{
+		}else{ 
 			if ( ('(' == ch)){ // if open parenthesis, sign doesn't change
 				retToken.setOp(ch);
 				index++;
 				return retToken;
-			}else if( ('+' == ch) || ('*' == ch) || ('/' == ch) || 
+			}else if( ('+' == ch) || ch == '-' || ('*' == ch) || ('/' == ch) || 
 						('(' == ch) || (')' == ch) || ('^' == ch)){
 				sign=1; 
 				retToken.setOp(ch); // set the operator
@@ -79,12 +79,29 @@ public class Expression{
 		return retToken;
 	}
 	
+	public double Eval(double a, char b)
+	// PRE: a b and c are initialized and valid
+	// POST: returns the double a op c depending on b
+	{
+		if( b == 's')       // sin
+			return Math.sin(a);
+		else if( b == 'c') // cos
+			return Math.cos(a);
+		else               // tan  
+			return Math.tan(a);
+	}
+	
 	public double Eval(double a, char b, double c)
 	// PRE: a b and c are initialized and valid
 	// POST: returns the double a op c depending on b
 	{
 		if( b == '^'){     // exponents
 			double val=1;
+			
+			if(a == 0)   // if base is 0
+				return 0;
+			if(c == 0)   // if exponent is 0
+				return 1;
 			
 			for(int i=0;i < Math.abs(c);i++){
 				val *= a;
@@ -204,12 +221,21 @@ public class Expression{
 		}
 	
 	public static double evaluate(String expr)
+	//PRE:
+	//POST:
 	{
-		Expression e = new Expression(expr);
-		return e.processExpression();
+	  Expression e = new Expression(expr);
+	  return e.processExpression();
 	}
-		
+	
+
 	public String toString(){
 		return "\n" + input  + solution +"\nThe length was: " + inputLength;
+	}
+	
+	public static void main(String[] argv)
+	{
+		Expression e = new Expression("0.0-0.0^3/6+0.0^5/120");
+		System.out.println(e.processExpression());
 	}
 }
