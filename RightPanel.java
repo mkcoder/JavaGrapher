@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -283,6 +284,9 @@ public class RightPanel extends JPanel
 	private JTextField tickHScale;					// change the X scale, zoom in				
 	private JTextField tickVScale;					// change the y scale, zooms in 
 	
+	private JLabel functionText;					// large font size function text at the top
+	private JLabel graphText;						// large font size graph text in the center 
+	
 	
 	public RightPanel(DrawManager _drawManager)
 	// PRE: _drawmanager is of instance of DrawManager
@@ -302,10 +306,14 @@ public class RightPanel extends JPanel
 		tickHScale = new JTextField();
 		tickVScale = new JTextField();
 		gridColor = new JColorChooser();
-		
+		functionText = new JLabel("FUNCTION");
+		graphText = new JLabel("GRAPH OPTIONS");
 		functionInputPanel = new JPanel();		
 		tableHolderPanel = new JPanel();
 
+		functionText.setFont(new Font("Serif", Font.BOLD, 18));
+		graphText.setFont(new Font("Serif", Font.BOLD, 18));
+		
 		dtm = new DefaultTableModel(new Object[] {
 				"Equation number", 
 				"Equation",
@@ -516,10 +524,13 @@ public class RightPanel extends JPanel
 			}
 		});
 		
-		functionInputPanel.add(new JLabel("f(x)="), BorderLayout.PAGE_START);
-		functionInputPanel.add(lineFunction, BorderLayout.NORTH);
-		functionInputPanel.add(add_function, BorderLayout.NORTH);
-
+		functionInputPanel.setLayout(new BorderLayout());
+		functionInputPanel.add(functionText, BorderLayout.PAGE_START);	
+		functionInputPanel.add(new JSeparator());
+		functionInputPanel.add(new JLabel("f(x)="), BorderLayout.WEST);
+		functionInputPanel.add(lineFunction, BorderLayout.CENTER);
+		functionInputPanel.add(add_function, BorderLayout.EAST);
+		
 		table.getColumn("INDEX").setCellEditor(new OptionEditor(false));
 		table.getColumn("EXPRESSION").setCellEditor(new OptionEditor(false));
 		table.getColumn("OPTION").setCellEditor(new OptionEditor(drawManager));
@@ -530,8 +541,9 @@ public class RightPanel extends JPanel
 		tableHolderPanel.add(table, BorderLayout.CENTER);
 		
 		
-		
+
 		grid_options.add(new JSeparator(), BorderLayout.PAGE_START);
+		grid_options.add(graphText, BorderLayout.WEST);
 		grid_options.setLayout(new GridLayout(0, 1));
 		grid_options.add(new JLabel("X Tick Value (0.00001, 10000000.0)"));
 		grid_options.add(tickHSize);
@@ -547,10 +559,10 @@ public class RightPanel extends JPanel
 		grid_options.add(showGrid);
 		grid_options.add(showGridColorOptions);
 		grid_options.add(showGridBGColorOptions);
-		
-		add(functionInputPanel);		
-		add(tableHolderPanel);
-		add(grid_options);
+			
+		add(functionInputPanel, BorderLayout.NORTH);		
+		add(tableHolderPanel, BorderLayout.CENTER);
+		add(grid_options, BorderLayout.PAGE_END);
 		setPreferredSize(new Dimension(340,1000));
 	}
 
