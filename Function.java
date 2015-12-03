@@ -52,13 +52,14 @@ public class Function
 			{				
 				public void run() // thread entry point
 				{
-					Point p1;
-					Point p2;
-					double x;
-					double y1;
-					double y2;
-					int begin;
-					int end;
+					Point p1;   // first point for the segment
+					Point p2;   // second point for the segment
+					double x;   // value of x
+					double y1;  // value of f(x) of the first x
+					double y2;  // value of f(x) of the second x
+					int begin;  // where thread's partition starts
+					int end;    // where thread's partition ends
+					String s1;  // helper string
 					
 					if(!visible) // draw or not draw
 					{
@@ -73,13 +74,15 @@ public class Function
 					for(int j = begin; j < end; j++) // segment of the panel to draw
 					{			
 						x = d.screenToGlobalX(j);
-						y1 = Expression.evaluate(expression.replace("x", x + ""));
+						s1 = String.format("%f", x);
+						y1 = Expression.evaluate(expression.replace("x", s1));
 									
 						p1.x = j;
 						p1.y = d.globalToScreenY(-y1); // get the first point
 						
 						x = d.screenToGlobalX(j + 1);
-						y2 = Expression.evaluate(expression.replace("x", x + ""));
+						s1 = String.format("%f", x);
+						y2 = Expression.evaluate(expression.replace("x", s1));
 						
 						if(!Double.isFinite(y1) || !Double.isFinite(y2)) // ignore infinities
 						{
@@ -89,7 +92,14 @@ public class Function
 						p2.x = j + 1;
 						p2.y = d.globalToScreenY(-y2); // get the second point
 						
-						Brush.drawLine(g, p1, p2, color, 1); // connect the dots
+						try
+						{
+							Brush.drawLine(g, p1, p2, color, 1); // connect the dots
+						}
+						catch(NullPointerException ex)
+						{
+							//Do nothing, weird JAVA feature
+						}
 					}
 				}
 			};
