@@ -66,15 +66,26 @@ public class ParticleGenerator
             y = Expression.evaluate(expression.replace("x", x+""));//Evaluate the expression at 
                                                                    // this new x position
             
+            if(!Double.isFinite(y))
+            {
+                p.setFinite(false);
+            }
+            else
+            {
+                p.setFinite(true);
+            }
+            
             p1 = new Point();
             p1.x = nextPosition;
-            p1.y = drawManager.globalToScreenY(-y);                               
+            p1.y = drawManager.globalToScreenY(-y);    
+            
+            
 
             remove = p.update(p1);         
             particleDensity = Math.random();
 
             
-            if(remove || (particles.size() < 500 && particleDensity < 0.01))//If we need to generate a new
+            if(remove || (particles.size() < 500 && particleDensity < 1))//If we need to generate a new
                                                                            // particle
             {
                 if(remove)//if remove is true, then we remove the particle from our list
@@ -97,6 +108,7 @@ public class ParticleGenerator
         
         x = drawManager.screenToGlobalX(0);  //map origin to global coordinate          
         y = Expression.evaluate(expression.replace("x", x+"")); //Evaluate the expression at 0
+
         
         randomLifeSpan = (int)(Math.random()*(500));           //Generate a random life span
 
@@ -127,6 +139,7 @@ private class Particle
        private int nextPosition;//The next location of the particle
        private Color color;     //The color of the particle
        private int life;        //The life span of the particle
+       private boolean isFinite;//Indicates whether value is finite
 
 
     public Particle(Point p, int radius, int life, Color color)
@@ -139,6 +152,14 @@ private class Particle
         this.life = life;
         this.nextPosition = 1;
         this.color = color;
+        this.isFinite = true;
+      
+    }
+    
+    public void setFinite(boolean finite)
+    //POST: FCTVAL = isFinite is set to the value passed in
+    {
+        this.isFinite = finite;
     }
     
     public boolean update(Point p)
@@ -162,6 +183,10 @@ private class Particle
     //POST: the particle is rendered on the GUI with the given
     //      user color.
     {
+        if(!(this.isFinite))
+        {
+            return;
+        }
         Brush.fillCircle(g, this.p, this.radius, userColor);
     }
    }
